@@ -6,13 +6,15 @@ warning('off', 'MATLAB:print:ContentTypeImageSuggested');
 
 %% Simulation name decode
 
-modulation_model = [
+STC_modulation_label = [
     "ON-ON-ON"
     "OFF-OFF-OFF"
     "ON-ON-OFF"
+    "Sinusoidal (continuos)"
+    "Sinusoidal (discrete)"
     ]';
 
-Z_su_model = [
+Z_model_label = [
     "Absent" 
     "R"
     "L"
@@ -22,13 +24,7 @@ Z_su_model = [
     "RLC-"
     ]';
 
-E_su_model = [
-    "Generic"
-    "C- (Ideal)"
-    "C- (Real)"
-    ]';
-
-simulation_type = [
+simulation_label = [
     "TM"
     "PWEM"
     "FDTD"
@@ -37,4 +33,4 @@ simulation_type = [
 
 %% App launcher
 
-app(modulation_model, Z_su_model, E_su_model, simulation_type);
+app(STC_modulation_label, Z_model_label, simulation_label);

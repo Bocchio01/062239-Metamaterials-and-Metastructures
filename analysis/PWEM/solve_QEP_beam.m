@@ -6,6 +6,9 @@ km = 2*pi / lm;
 k = mu / lm;
 
 K_global = zeros((2*Q + 1)*(2*P + 1));
+M0_global = zeros((2*Q + 1)*(2*P + 1));
+M1_global = zeros((2*Q + 1)*(2*P + 1));
+M2_global = zeros((2*Q + 1)*(2*P + 1));
 
 [SS, PP] = ndgrid(1:(2*P + 1), 1:(2*P + 1));
 [RR, QQ] = ndgrid(1:(2*Q + 1), 1:(2*Q + 1));
@@ -16,26 +19,39 @@ K_global = zeros((2*Q + 1)*(2*P + 1));
     );
 
 % Compute K_locals (4D tensor)
-K_locals = -sqrt( ...
+K_locals = sqrt( ...
     J_hat(sub2ind(size(J_hat), row_indices(:), col_indices(:))) ./ ...
     A_hat(sub2ind(size(A_hat), row_indices(:), col_indices(:))) ...
     ) .* E_hat(sub2ind(size(E_hat), row_indices(:), col_indices(:)));
-K_locals = reshape(K_locals, 2*Q + 1, 2*Q + 1, 2*P + 1, 2*P + 1);
-multiplier = (k + p * km)'.^2 .* (k + p * km).^2;
-multiplier = reshape(multiplier, 1, 1, 2*P + 1, 2*P + 1);
-K_locals = K_locals .* multiplier;
+[M0_locals, M1_locals, M2_locals] = deal(rho_hat(sub2ind(size(rho_hat), row_indices(:), col_indices(:))));
 
-% Assemble K_global
+K_locals = reshape(K_locals, 2*Q + 1, 2*Q + 1, 2*P + 1, 2*P + 1);
+M0_locals = reshape(M0_locals, 2*Q + 1, 2*Q + 1, 2*P + 1, 2*P + 1) .* (meshgrid(q) .* meshgrid(q)') * wm^2;
+M1_locals = reshape(M1_locals, 2*Q + 1, 2*Q + 1, 2*P + 1, 2*P + 1) .* (meshgrid(q) + meshgrid(q)') * wm;
+M2_locals = reshape(M2_locals, 2*Q + 1, 2*Q + 1, 2*P + 1, 2*P + 1);
+
+K_locals_multiplier = (k + p * km)'.^2 .* (k + p * km).^2;
+K_locals_multiplier = reshape(K_locals_multiplier, 1, 1, 2*P + 1, 2*P + 1);
+
+K_locals = K_locals .* K_locals_multiplier;
+
+% Assembly global matrices
 for block = 1:numel(SS)
+    
     idxs1 = (1:2*Q + 1) + (SS(block) - 1) * (2*Q + 1);
     idxs2 = (1:2*Q + 1) + (PP(block) - 1) * (2*Q + 1);
+
     K_global(idxs1, idxs2) = K_global(idxs1, idxs2) + K_locals(:, :, SS(block), PP(block));
+    M0_global(idxs1, idxs2) = M0_global(idxs1, idxs2) + M0_locals(:, :, SS(block), PP(block));
+    M1_global(idxs1, idxs2) = M1_global(idxs1, idxs2) + M1_locals(:, :, SS(block), PP(block));
+    M2_global(idxs1, idxs2) = M2_global(idxs1, idxs2) + M2_locals(:, :, SS(block), PP(block));
+
 end
 
 % Compute L* of the QEP problem
-L0 = kron(eye(2*P + 1), rho_hat*wm^2 * diag(q.^2)) + K_global;
-L1 = kron(eye(2*P + 1), 2*rho_hat*wm * diag(q));
-L2 = kron(eye(2*P + 1), rho_hat * eye(length(q)));
+L0 = -K_global + M0_global;
+L1 = M1_global;
+L2 = M2_global;
 
 % Solve QEP and sort eigenvalues (and vectors)
 L_norm = mean(abs([norm(L0) norm(L1) norm(L2)]));

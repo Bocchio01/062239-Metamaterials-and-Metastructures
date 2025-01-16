@@ -1,18 +1,12 @@
-%% Bloch modes analysis for Discretely modulated waveguides
+[STC, modulation] = assemble_STC('Sinusoidal (discrete)', 'C-');
 
-clc
-clear variables
-% close all
-
-load('parameters.mat')
-[modulation, E_su] = setup_piezos_shunted('ON', 'C-', 'C- (Ideal)');
 
 %% Numerical simulation (FDTD)
 
-c0 = sqrt(beam.E(1) / beam.rho(1));
+c0 = sqrt(STC(1).E{1}(0) / STC(1).rho{1});
 
 am = 0.6;
-Nx_step = 3001;
+Nx_step = 1001;
 
 L = 100 * modulation.lambda - 5e-15;
 T = 1/2 * (L / c0);
@@ -24,16 +18,16 @@ t = 0:dt:T;
 
 % Modulation time history
 [x_grid, t_grid] = meshgrid(x, t);
-[E_grid, J_grid, A_grid, rho_grid] = compute_structure_properties(x_grid, t_grid, modulation, E_su);
+[E_grid, J_grid, A_grid, rho_grid] = evaluate_structural_properties(x_grid, t_grid, STC);
 E_grid = E_grid';
 
 
 %% 
 %--- Input displacement --------------------------------------------------%
 
-Om_y = 0.5;
+Om_y = 8;
 fy = Om_y / (modulation.lambda/c0);
-amp = 0.4 / (modulation.lambda/c0);               % spectrum semi-width (only for cos)
+amp = 8 / (modulation.lambda/c0);               % spectrum semi-width (only for cos)
 nc = floor(fy*2/amp);            % number of cycles (amp = 2*fy/nc)
 TIn = nc/fy;                     % duration of the force tone burst
 
@@ -41,7 +35,7 @@ F0 = @(tt) 1.*sin(2*pi*fy*tt).* ...
     (1-1.93*cos(2*pi*fy/nc*tt)+1.29*cos(4*pi*fy/nc*tt) ...
      -0.388*cos(6*pi*fy/nc*tt)+0.028*cos(8*pi*fy/nc*tt))/4.6360.*(tt < TIn) + ...
      +0.*((tt >= TIn));
-F0 = @(tt) randn(length(tt), 1);
+% F0 = @(tt) randn(length(tt), 1);
 force = F0(t);
 
 
@@ -99,7 +93,7 @@ reset(0)
 set(0, 'DefaultFigureNumberTitle', 'off')
 set(0, 'DefaultFigureWindowStyle', 'docked')
 
-figure('Name', ['Modulation #' num2str(modulation.model)])
+figure('Name', ['Modulation #' num2str(modulation.label)])
 tile = tiledlayout(1, 4);
 
 nexttile(tile, 1)
@@ -177,6 +171,5 @@ ylim([0 max(y_grid)])
 % xlabel('A')
 % ylim([Om_min Om_max])
 
-nexttile
-
-plot_ScreenShot(modulation.model)
+% nexttile
+% plot_ScreenShot(modulation.model)
