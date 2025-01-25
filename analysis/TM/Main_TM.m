@@ -1,44 +1,36 @@
-% Z_su_model = 'C-';
-% [modulation, E_piezos_shunted_model, Z_su_model, E_su_model] = setup_piezos_shunted('OFF-OFF-OFF', 'Absent', 'C- (Ideal)');
+clc
+clear variables
 
-% shunt = Shunt(Z_su_model);
-% piezo = Piezo();
-% beam  = Beam();
-% STC = SpatioTemporalCell(beam, piezo);
-
-shunt = STC.Piezo.Shunt;
-piezo = STC.Piezo;
-beam = STC.Beam;
-
-%% Frequency domain
-
-f = linspace(1, 20000, 1000);
+[STC, modulation] = assemble_STC('ON-ON-ON');
+% [STC, modulation] = assemble_STC('OFF-OFF-OFF');
+STC = STC(1);
 
 
 %% Dispersion relation computation via T matrix method
 
+f  = linspace(1, 20000, 1000);
 mu = zeros(4, length(f));
 alpha = zeros(size(mu));
-beta = zeros(size(mu));
+beta  = zeros(size(mu));
 
-for ii = 1:length(f)
+for f_idx = 1:length(f)
 
-    if (~strcmp(shunt.label, 'Absent'))
-        piezo = piezo.bindShunt(shunt, 2*pi*f(ii));
-        STC = SpatioTemporalCell(beam, piezo);
+    if (strcmp(modulation.label, 'ON-ON-ON'))
+        STC.Piezo = STC.Piezo.bindShunt(STC.Piezo.Shunt, 2*pi * f(f_idx));
+        STC = STC.computeAveragedProps();
     end
 
-    T1 = compute_T_beam(2*pi*f(ii), STC.rho{1}, STC.A{1}, STC.E{1}(0), STC.J{1}, piezo.L);
-    T2 = compute_T_beam(2*pi*f(ii), STC.rho{2}, STC.A{2}, STC.E{2}(0), STC.J{2}, beam.L - piezo.L);
+    T1 = compute_T_beam(2*pi * f(f_idx), STC.rho{1}, STC.A{1}, STC.E{1}(0), STC.J{1}, STC.Piezo.L);
+    T2 = compute_T_beam(2*pi * f(f_idx), STC.rho{2}, STC.A{2}, STC.E{2}(0), STC.J{2}, STC.Beam.L - STC.Piezo.L);
 
     T = T2 * T1;
-    mu(:, ii) = sort(log(eig(T)) / 1i);
-    [alpha(:, ii), sorting] = sort(real(mu(:, ii)));
-    beta(:, ii) = imag(mu(sorting, ii));
+    mu(:, f_idx) = sort(log(eig(T)) / 1i);
+    [alpha(:, f_idx), sorting] = sort(real(mu(:, f_idx)));
+    beta(:, f_idx) = imag(mu(sorting, f_idx));
 
 end
 
-clear T T1 T2 sorting ii
+clear T T1 T2 sorting f_idx
 
 
 %% Plots
@@ -47,10 +39,9 @@ reset(0)
 set(0, 'DefaultFigureNumberTitle', 'off')
 set(0, 'DefaultFigureWindowStyle', 'docked')
 
-figure('Name', 'Dispersions diagrams')
-tiledlayout(1, 2)
+figure('Name', ['TM: ', modulation.label])
+tiledlayout(2, 1, 'TileSpacing', 'tight')
 
-% Dispersion relations
 figure_alpha = nexttile;
 hold on
 grid on
@@ -67,10 +58,13 @@ hold on
 grid on
 
 plot(f*1e-3, beta, '.')
+% plot(beta, f*1e-3, '.')
+% plot_ScreenShot(modulation.label)
 
-title(['Attenuating part ' shunt.label])
+title('Attenuating part')
 xlabel('f [kHz]')
 ylabel('Im[\mu]')
 
 linkaxes([figure_alpha figure_beta], 'xy')
-ylim([0 7])
+ylim([-pi pi]);
+

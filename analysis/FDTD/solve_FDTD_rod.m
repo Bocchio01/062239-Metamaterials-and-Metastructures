@@ -1,4 +1,4 @@
-function [u] = solve_FDTD_rod(x_vector, t_vector, force, E_grid, rho)
+function [u] = solve_FDTD_rod(x_vector, t_vector, force, E_grid, rho_grid)
 
 u = zeros(length(t_vector), length(x_vector));
 v = zeros(length(t_vector), length(x_vector));
@@ -12,7 +12,7 @@ for q = 2:length(t_vector) - 1
     v(q, centro) = v(q, centro) + force(q);
 
     for m = 2:length(x_vector) - 1
-        v(q+1, m) = (dt/dx)^2 / rho * E_grid(m, q) * (v(q, m+1) - 2*v(q, m) + v(q, m-1)) + 2*v(q, m) - v(q-1, m);
+        v(q+1, m) = (dt/dx)^2 / rho_grid(q, m) * E_grid(q, m) * (v(q, m+1) - 2*v(q, m) + v(q, m-1)) + 2*v(q, m) - v(q-1, m);
     end
 
     u(q+1, 2:length(x_vector)) = diff(v(q+1, :)) / dx;

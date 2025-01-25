@@ -1,38 +1,33 @@
-function [STC, modulation] = assemble_STC(STC_modulation_label, Z_model_label)
+function [STC, modulation] = assemble_STC(modulation_label, modulation_frequency, components)
 
-shunts(1:3) = deal(Shunt(Z_model_label));
-beams(1:3)  = deal(Beam());
-piezos(1:3) = deal(Piezo());
-
-% Modulation data
-modulation.label      = STC_modulation_label;
-modulation.lambda     = sum([beams.L]);
-modulation.wavenumber = 2*pi / modulation.lambda;
-
-switch modulation.label
-    
-    case {'OFF-OFF-OFF', 'ON-ON-ON', 'ON-ON-OFF'}
-        modulation.omega     = 0;
-        modulation.period    = 1;
-        modulation.amplitude = 0;
-
-    case {'Sinusoidal (continuos)', 'Sinusoidal (discrete)'}
-        modulation.omega  = 0.2 * sqrt(beams(1).E / beams(1).rho) * modulation.wavenumber;
-        modulation.period = 2*pi / modulation.omega;
-
-        E_sandwich_ON  = abs(SpatioTemporalCell(Beam(), Piezo().bindShunt(Shunt(Z_model_label), modulation.omega)).E{1}(0));
-        E_sandwich_OFF = abs(SpatioTemporalCell(Beam(), Piezo()).E{1}(0));
-   
-        modulation.amplitude = (E_sandwich_ON - E_sandwich_OFF) / (E_sandwich_ON + E_sandwich_OFF);
-        modulation.amplitude = 27.5 / 100;
-
-        clear E_sandwich_OFF E_sandwich_ON
-
-    otherwise
-        error('Unknown modulation model: %s', modulation.label)
-
+arguments
+    modulation_label {mustBeMember(modulation_label,['OFF-OFF-OFF','ON-ON-ON','ON-ON-OFF','Sinusoidal (continuos)','Sinusoidal (discrete)'])} = 'Sinusoidal (discrete)'
+    modulation_frequency {mustBeNumeric} = 0
+    components.beam  Beam  = Beam()
+    components.piezo Piezo = Piezo()
+    components.shunt Shunt = Shunt('C-')
 end
 
+beams(1:3)  = deal(components.beam);
+piezos(1:3) = deal(components.piezo);
+shunts(1:3) = deal(components.shunt);
+
+% Modulation data
+modulation.label      = modulation_label;
+modulation.lambda     = sum([beams.L]);
+modulation.wavenumber = 2*pi / modulation.lambda;
+modulation.omega      = 2*pi * modulation_frequency;
+% modulation.period     = min(1 / modulation_frequency, 1);
+modulation.period     = 1 / modulation_frequency;
+
+E_sandwich_ON  = abs(SpatioTemporalCell(components.beam, components.piezo.bindShunt(components.shunt, modulation.omega)).E{1}(0));
+E_sandwich_OFF = abs(SpatioTemporalCell(components.beam, components.piezo).E{1}(0));
+
+modulation.mean = (E_sandwich_ON + E_sandwich_OFF) / 2;
+modulation.amplitude = - (E_sandwich_ON - E_sandwich_OFF) / (E_sandwich_ON + E_sandwich_OFF);
+
+% modulation.mean = components.beam.E;
+% modulation.amplitude = 0.6;
 
 switch modulation.label
 
@@ -52,14 +47,14 @@ switch modulation.label
         % piezos(3) = piezos(3).bindShunt(shunts(3), modulation.omega);
 
     case 'Sinusoidal (continuos)'
-        piezos(1).E = @(t) (beams(1).E * (1 + modulation.amplitude * cos(2*pi*1/modulation.period*t + (1-1)*2*pi/3 )));
-        piezos(2).E = @(t) (beams(2).E * (1 + modulation.amplitude * cos(2*pi*1/modulation.period*t + (2-1)*2*pi/3 )));
-        piezos(3).E = @(t) (beams(3).E * (1 + modulation.amplitude * cos(2*pi*1/modulation.period*t + (3-1)*2*pi/3 )));
+        piezos(1).E = @(t) (modulation.mean * (1 + modulation.amplitude * cos(modulation.omega*t + (1-1)*2*pi/3 )));
+        piezos(2).E = @(t) (modulation.mean * (1 + modulation.amplitude * cos(modulation.omega*t + (2-1)*2*pi/3 )));
+        piezos(3).E = @(t) (modulation.mean * (1 + modulation.amplitude * cos(modulation.omega*t + (3-1)*2*pi/3 )));
 
-    case 'Sinusoidal (discrete)'
-        piezos(1).E = @(t) (beams(1).E * (1 + modulation.amplitude * sign( cos(2*pi*1/modulation.period*t + (1-1)*2*pi/3 ))));
-        piezos(2).E = @(t) (beams(2).E * (1 + modulation.amplitude * sign( cos(2*pi*1/modulation.period*t + (2-1)*2*pi/3 ))));
-        piezos(3).E = @(t) (beams(3).E * (1 + modulation.amplitude * sign( cos(2*pi*1/modulation.period*t + (3-1)*2*pi/3 ))));
+    case 'Sinusoidal (discrete)'        
+        piezos(1).E = @(t) (modulation.mean * (1 + modulation.amplitude * sign( cos(modulation.omega*t + (1-1)*2*pi/3 ))));
+        piezos(2).E = @(t) (modulation.mean * (1 + modulation.amplitude * sign( cos(modulation.omega*t + (2-1)*2*pi/3 ))));
+        piezos(3).E = @(t) (modulation.mean * (1 + modulation.amplitude * sign( cos(modulation.omega*t + (3-1)*2*pi/3 ))));
 
     otherwise
         error('Unknown modulation model: %s', modulation.label)
