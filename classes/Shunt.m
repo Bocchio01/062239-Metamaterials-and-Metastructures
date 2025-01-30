@@ -43,7 +43,7 @@ classdef Shunt
         end
         
         function Z = getZModel(obj)
-            % We need to complete with the paraller connection of the shunt
+            % We need to complete with the parallel connection of the shunt
             % elements R L C-
             Z_map = containers.Map( ...
             {'Absent', 'R', 'L', 'C-', 'RL', 'RC-', 'RLC-'}, ...

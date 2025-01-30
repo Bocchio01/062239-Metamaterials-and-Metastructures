@@ -1,4 +1,4 @@
-function [alpha, beta] = solve_QEP_beam(mu, P, Q, E_hat, J_hat, A_hat, rho_hat, wm, lm)
+function [alpha, beta] = solve_QEP_beam(mu, P, Q, EJ_hat, rhoA_hat, wm, lm)
 
 p = -P:P;
 q = -Q:Q;
@@ -14,16 +14,13 @@ M2_global = zeros((2*Q + 1)*(2*P + 1));
 [RR, QQ] = ndgrid(1:(2*Q + 1), 1:(2*Q + 1));
 
 [row_indices, col_indices] = meshgrid( ...
-    (size(E_hat, 1)/2) + 1 + p(SS) - p(PP), ...
-    (size(E_hat, 2)/2) + 1 + q(RR) - q(QQ) ...
+    (size(EJ_hat, 1)/2) + 1 + p(SS) - p(PP), ...
+    (size(EJ_hat, 2)/2) + 1 + q(RR) - q(QQ) ...
     );
 
 % Compute K_locals (4D tensor)
-K_locals = sqrt( ...
-    J_hat(sub2ind(size(J_hat), row_indices(:), col_indices(:))) ./ ...
-    A_hat(sub2ind(size(A_hat), row_indices(:), col_indices(:))) ...
-    ) .* E_hat(sub2ind(size(E_hat), row_indices(:), col_indices(:)));
-[M0_locals, M1_locals, M2_locals] = deal(rho_hat(sub2ind(size(rho_hat), row_indices(:), col_indices(:))));
+K_locals = EJ_hat(sub2ind(size(EJ_hat), row_indices(:), col_indices(:)));
+[M0_locals, M1_locals, M2_locals] = deal(rhoA_hat(sub2ind(size(rhoA_hat), row_indices(:), col_indices(:))));
 
 K_locals = reshape(K_locals, 2*Q + 1, 2*Q + 1, 2*P + 1, 2*P + 1);
 M0_locals = reshape(M0_locals, 2*Q + 1, 2*Q + 1, 2*P + 1, 2*P + 1) .* (meshgrid(q) .* meshgrid(q)') * wm^2;

@@ -1,4 +1,4 @@
-function T = compute_T_beam(w, rho, A, E, J, L)
+function T = compute_T_beam(w, E, J, A, rho, L)
 
 k = sqrt(w*sqrt(rho*A/(E*J)));
 mu = k*L;

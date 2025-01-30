@@ -1,0 +1,14 @@
+{
+  "_schemaVersion": "1.0.0",
+  "assemble_STC":
+  {
+     "inputs":
+     [
+        {"name":"modulation_label", "kind":"required", "type":["char", "choices={'OFF-OFF-OFF','ON-ON-ON','ON-OFF-OFF','Sinusoidal (continuos)','Sinusoidal (discrete)'}"], "purpose":"Piezo modulation type"},
+        {"name":"modulation_frequency", "kind":"ordered", "type":["numeric","scalar"], "purpose":"Piezo modulation frequency (default 0)"},
+        {"name":"beam", "kind":"namevalue", "type":"Beam", "purpose":"Beam type element"},
+        {"name":"piezo", "kind":"namevalue", "type":"Piezo", "purpose":"Piezo type element"},
+        {"name":"shunt", "kind":"namevalue", "type":"Shunt", "purpose":"Shunt type element"}
+     ]
+  }
+}

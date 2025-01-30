@@ -1,4 +1,4 @@
-function T = compute_T_bar(w, rho, E, A, L)
+function T = compute_T_bar(w, E, A, rho, L)
 
 c  = sqrt(E / rho);
 k  = w / c;

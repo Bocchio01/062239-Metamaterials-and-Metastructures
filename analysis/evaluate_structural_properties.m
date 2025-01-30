@@ -1,6 +1,10 @@
 function [E, J, A, rho] = evaluate_structural_properties(x_grid, t_grid, ST_cell)
 
 x_grid = mod(x_grid, sum(arrayfun(@(obj) obj.Beam.L, ST_cell)));
+% lm = sum(arrayfun(@(obj) obj.Beam.L, ST_cell));
+% for jj = 1:size(x_grid, 1)
+%     x_grid(jj, :) = x_grid(jj, :) - lm*floor(x_grid(jj, :)/(lm + 1e-7));
+% end
 
 L = cumsum(reshape([ ...
     arrayfun(@(obj) obj.Piezo.L, ST_cell) ...

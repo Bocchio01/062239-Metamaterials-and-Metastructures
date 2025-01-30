@@ -56,7 +56,7 @@ classdef Piezo
         function obj = bindShunt(obj, shunt, w)
 
             obj.Shunt = shunt;
-            obj.E = @(t) obj.Y11_D * (1 - obj.k31^2 / (1 + 1i*w*obj.C_S*obj.Shunt.Z(w)));
+            obj.E = @(t) real(obj.Y11_D * (1 - obj.k31^2 / (1 + 1i*w*obj.C_S*obj.Shunt.Z(w))));
 
         end
         

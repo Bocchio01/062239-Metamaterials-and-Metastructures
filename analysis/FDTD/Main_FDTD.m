@@ -1,81 +1,58 @@
 clc
 clear variables
+% close all
 
-[STC, modulation] = assemble_STC('Sinusoidal (continuos)', 10000);
+[STC, modulation] = assemble_STC('Sinusoidal (continuos)', 3000);
 
 
 %% Numerical simulation (FDTD)
 
+% Here E should be the mean of sandwich?
 c0 = sqrt(STC(1).Beam.E / STC(1).Beam.rho);
 
-N = 2000;
-Lf = 200 * modulation.lambda;
-Tf = 1.5 * (Lf / c0);
+N = 3000;
+x_max = 150 * modulation.lambda;
+t_max = 1 * (x_max / c0);
 
-x = linspace(0, Lf, N);
-t = linspace(0, Tf, 2*N);
+x = linspace(0, x_max, N);
+t = linspace(0, t_max, 2*N);
+
+
+% N = 3001;
+% x_max = 150 * modulation.lambda;
+% dx = x_max / (N-1);
+% Tf = x_max/(c0)*0.6;
+% 
+% dt = dx/(c0*sqrt(1 + 0.6))/2;
+% 
+% x = linspace(0,x_max,N);
+% t = linspace(0,Tf,ceil(Tf/dt));
 
 % Modulation time history
 [x_grid, t_grid] = meshgrid(x, t);
 [E_grid, J_grid, A_grid, rho_grid] = evaluate_structural_properties(x_grid, t_grid, STC);
 
 
-%% Excitation force 
+%% Excitation force
+% The smaller fe or dfe, the longer the time needed
 
-Om_y = 5;
-fy = Om_y / (modulation.lambda/c0);
-amp = 1 / (modulation.lambda/c0);               % spectrum semi-width (only for cos)
-nc = floor(fy*2/amp);            % number of cycles (amp = 2*fy/nc)
-TIn = nc/fy;                     % duration of the force tone burst
-
-F0 = @(tt) 1.*sin(2*pi*fy*tt).* ...
-    (1-1.93*cos(2*pi*fy/nc*tt)+1.29*cos(4*pi*fy/nc*tt) ...
-     -0.388*cos(6*pi*fy/nc*tt)+0.028*cos(8*pi*fy/nc*tt))/4.6360.*(tt < TIn) + ...
-     +0.*((tt >= TIn));
-
-force = F0(t);
+excitation.frequency = 700e+03;%8.4 * 1e3;
+excitation.amplitude = 600e+03; %8.0 * 1e3;
+excitation.force = tone_burst(t, excitation.frequency, excitation.amplitude);
 
 
-%% FDTD
+%% Finite difference finite time
 
-[UU] = solve_FDTD_rod(x, t, force, E_grid, rho_grid);
-% [UU] = solve_FDTD_beam(x, t, force, E_grid, rho_grid, J_grid, A_grid);
-norma = max(abs(UU(:, round(modulation.lambda/Lf*N):end)), [], 'all');
-
+% [U] = solve_FDTD_rod(x, t, excitation.force, E_grid, rho_grid);
+[U] = solve_FDTD_beam(x, t, excitation.force, E_grid, rho_grid, J_grid, A_grid);
 
 %% Fourier transform - active trait
 
-% Wavenumber domain
-Nx = size(UU,2); 
-Nx = Nx - rem(Nx,2);
-kk = (-Nx/2 : Nx/2) * 2*pi/(Lf); % res wavenumber [rad/m]
-mu = kk * modulation.lambda;
+mu = (-length(x)/2 : length(x)/2-1) * modulation.lambda * 2*pi / x_max;
+ff = (-length(t)/2 : length(t)/2-1) * 1 / t_max;
 
-% Frequency domain
-Nt = size(UU,1); 
-Nt = Nt - rem(Nt,2);  
-fres = 1/(Tf); % res time frequency [1/s]
-ff = (-Nt/2:Nt/2)*fres;
-
-% FFT2D
-dx = diff(x(1:2));
-dt = diff(t(1:2));
-Uf = fftshift(fft2(flipud(UU/norma)))*dx*dt;
-
-mLim = [-3*pi 3*pi];
-fLim = [0 1e5];
-
-[Valmm1,pos1] = min(abs(mu-mLim(1)));
-[Valmm2,pos2] = min(abs(mu-mLim(2)));
-mDomain = [pos1,pos2];
-
-[Valff1,pos1] = min(abs(ff-fLim(1)));
-[Valff2,pos2] = min(abs(ff-fLim(2)));
-fDomain = [pos1,pos2];
-
-UWindow = abs(Uf(fDomain(1):fDomain(2),mDomain(1):mDomain(2)));
-mWindow = mu(mDomain(1):mDomain(2));
-fWindow = ff(fDomain(1):fDomain(2));
+U_fft = abs(fftshift(fft2(U)));
+U_fft = U_fft / max(U_fft, [], 'all');
 
 
 %% Plots
@@ -87,21 +64,39 @@ set(0, 'DefaultFigureWindowStyle', 'docked')
 figure('Name', ['FDTD: ' modulation.label])
 tile = tiledlayout(1, 3);
 
-nexttile(tile, 1)
-force_fft = abs(fftshift(fft(force)));
-plot(force_fft, 1:length(force_fft));
-
-% Numerical Dispersion Plot
-nexttile(tile, 2, [1, 2])
+tile_force = nexttile(tile, 1);
 hold on
 grid on
 
-contourf(mWindow/pi, fWindow, UWindow / max(UWindow, [], 'all'), 0.08:0.01:1, 'EdgeColor', 'none')
+force_fft = fftshift(fft(excitation.force));
+force_power_spectrum = abs(force_fft).^2;
+plot(force_power_spectrum / (max(force_power_spectrum)), ff * 1e-3)
 
-colormap(jet(64))
+title('Force')
+xlabel('A [-]')
+ylabel('f [khz]')
+
+xlim([0 1])
+ylim([0 20])
+
+
+% Numerical Dispersion Plot
+disp_tile = nexttile(tile, 2, [1, 2]);
+hold on
+grid on
+
+surf(mu / pi, ff * 1e-3, U_fft);
+
+colormap([1 1 1; jet(64)])
 colorbar
-clim([0.08 1])
+clim([0.1 1])
+shading interp
 
-title('Pseudo dispersion from FDTD')
+title('Dispersion diagram')
 xlabel('\mu / \pi [-]')
 ylabel('f [khz]')
+
+xlim([-5 5])
+ylim([0 70])
+
+linkaxes([tile_force disp_tile], 'y')

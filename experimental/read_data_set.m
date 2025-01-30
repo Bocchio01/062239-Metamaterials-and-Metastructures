@@ -3,7 +3,14 @@ function [measured, x, nodes, infos] = read_data_set(filename)
 % observed. If not, one should use the provided `readuff()` function and
 % load each node data separately in a cell of structs.
 
-[UffDataSets, Info] = readuff(filename);
+if (nargin == 0)
+    filename = uigetfile({'*.unv'}, 'Select experimental dataset', [pwd '\experimental\data\nonreciprocal']);
+    if (filename == 0)
+        error('No file chosen. Exit.');
+    end
+end
+
+[UffDataSets, Info] = readuff(['experimental/data/nonreciprocal/' filename]);
 
 assert(all(Info.errcode == 0), 'Error while loading data');
 
@@ -15,6 +22,7 @@ data = UffDataSets(Info.dsTypes == 58);
 x = data{1, 1}.x';
 
 infos = struct( ...
+    'filename', filename, ...
     'name', data{1, 1}.d1, ...
     'description', data{1, 1}.d2, ...
     'x_unit', data{1, 1}.abscissaUnitsLabel, ...
