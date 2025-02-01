@@ -1,23 +1,33 @@
-function [u] = solve_FDTD_rod(x_vector, t_vector, force, E_grid, rho_grid)
+function [u] = solve_FDTD_rod(x_vector, t_vector, excitation, E_grid, rho_grid)
 
-u = zeros(length(t_vector), length(x_vector));
-v = zeros(length(t_vector), length(x_vector));
-centro = floor((length(x_vector) + 1)/2);
+coordinate = floor(excitation.coordinate * length(x_vector));
+offset = abs(length(x_vector) - 2*coordinate);
 
 dx = diff(x_vector(1:2));
 dt = diff(t_vector(1:2));
 
-for q = 2:length(t_vector) - 1
+if (dt > min(dx ./ sqrt(E_grid ./ rho_grid), [], 'all'))
+    error('Stability criterion not met. Decrease dt.')
+end
 
-    v(q, centro) = v(q, centro) + force(q);
+u = zeros(length(t_vector), offset + length(x_vector) + offset);
+v = zeros(length(t_vector), offset + length(x_vector) + offset);
+E_grid = [E_grid(:, -offset+end:end) E_grid E_grid(:, 1:1+offset)];
+rho_grid = [rho_grid(:, -offset+end:end) rho_grid rho_grid(:, 1:1+offset)];
 
-    for m = 2:length(x_vector) - 1
-        v(q+1, m) = (dt/dx)^2 / rho_grid(q, m) * E_grid(q, m) * (v(q, m+1) - 2*v(q, m) + v(q, m-1)) + 2*v(q, m) - v(q-1, m);
+for t = 2:size(v, 1) - 1
+
+    v(t, offset + coordinate) = v(t, offset + coordinate) + excitation.force(t);
+
+    for x = 2:size(v, 2) - 1
+        v(t+1, x) = (dt/dx)^2 / rho_grid(t, x) * E_grid(t, x) * (v(t, x+1) - 2*v(t, x) + v(t, x-1)) + 2*v(t, x) - v(t-1, x);
     end
 
-    u(q+1, 2:length(x_vector)) = diff(v(q+1, :)) / dx;
+    u(t+1, 2:end) = diff(v(t+1, :)) / dx;
 
 end
+
+u = u(:, offset + (1:length(x_vector)));
 
 end
 

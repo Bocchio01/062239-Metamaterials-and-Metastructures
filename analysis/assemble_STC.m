@@ -10,6 +10,8 @@ end
 
 beams(1:3)  = deal(components.beam);
 piezos(1:3) = deal(components.piezo);
+E_piezo_OFF = components.piezo.E(0);
+E_piezo_ON  = components.piezo.bindShunt(components.shunt, 1e6).E(0); % Only for the C- case?
 
 % Modulation data
 modulation.label      = modulation_label;
@@ -18,9 +20,8 @@ modulation.wavenumber = 2*pi / modulation.lambda;
 modulation.omega      = 2*pi * modulation_frequency;
 modulation.period     = min(1 / modulation_frequency, 100);
 % modulation.period     = 1 / modulation_frequency;
-
-E_piezo_OFF = components.piezo.E(0);
-E_piezo_ON  = components.piezo.bindShunt(components.shunt, 1e6).E(0); % Only for the C- case?
+modulation.mean       = (E_piezo_OFF + E_piezo_ON) / 2;
+modulation.amplitude  = (E_piezo_OFF - E_piezo_ON) / 2;
 
 switch modulation.label
 
@@ -41,15 +42,11 @@ switch modulation.label
         warning('You should use Sinusoidal (discrete) @0Hz instead')
 
     case 'Sinusoidal (continuos)'
-        modulation.mean      = (E_piezo_OFF + E_piezo_ON) / 2;
-        modulation.amplitude = (E_piezo_OFF - E_piezo_ON) / 2;
         piezos(1).E = @(t) modulation.mean + modulation.amplitude * cos(modulation.omega*t + (1-1)*2*pi/3);
         piezos(2).E = @(t) modulation.mean + modulation.amplitude * cos(modulation.omega*t + (2-1)*2*pi/3);
         piezos(3).E = @(t) modulation.mean + modulation.amplitude * cos(modulation.omega*t + (3-1)*2*pi/3);
 
     case 'Sinusoidal (discrete)'
-        modulation.mean      = (E_piezo_OFF + E_piezo_ON) / 2;
-        modulation.amplitude = (E_piezo_OFF - E_piezo_ON) / 2;
         piezos(1).E = @(t) modulation.mean + modulation.amplitude * sign( cos(modulation.omega*t + (1-1)*2*pi/3) );
         piezos(2).E = @(t) modulation.mean + modulation.amplitude * sign( cos(modulation.omega*t + (2-1)*2*pi/3) );
         piezos(3).E = @(t) modulation.mean + modulation.amplitude * sign( cos(modulation.omega*t + (3-1)*2*pi/3) );

@@ -2,8 +2,9 @@ clc
 clear variables
 % close all
 
-[STC, modulation] = assemble_STC('ON-ON-ON');
+[STC, modulation] = assemble_STC('OFF-OFF-OFF');
 STC = STC(1);
+STC.Piezo = STC.Piezo.bindShunt(Shunt('C-'), 0);
 
 
 %% Dispersion relation computation via T matrix method
@@ -43,3 +44,5 @@ set(0, 'DefaultFigureWindowStyle', 'docked')
 
 figure('Name', ['TM: ', modulation.label])
 plot_dispersion_diagram(mu, f, 0, 'inverse');
+% overlay(modulation.label)
+% grid minor

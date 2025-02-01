@@ -2,7 +2,7 @@
 clear variables
 % close all
 
-[STC, modulation] = assemble_STC('ON-ON-ON');
+[STC, modulation] = assemble_STC('Sinusoidal (discrete)', 1000);
 
 
 %% Structural properties evaluation
@@ -51,7 +51,7 @@ fprintf('\b\b\b\b%.2fs\n', toc);
 %% Quadratic eigenvalue problem
 % The number of harmonics considered is governed by P (space) and Q (time)
 
-mu = linspace(-5*pi, 0*pi, 100);
+mu = linspace(-5*pi, 5*pi, 200);
 P = 30;
 Q = 1;
 
@@ -89,7 +89,7 @@ colormap(jet(64))
 % Structural properties
 axes('parent', uitab(tabgroup, 'Title', ['Structural properties | size([x,t]) = [' num2str(length(x)) ',' num2str(length(t)) ']']));
 
-tile_EJ_grid = plot_structural_property(x_grid, t_grid, E_grid, 'Unit cell (EJ)', 'EJ [Nm^2]');
+tile_EJ_grid = plot_structural_property(x_grid, t_grid, EJ_grid, 'Unit cell (EJ)', 'EJ [Nm^2]');
 tile_rhoA_grid = plot_structural_property(x_grid, t_grid, rhoA_grid, 'Unit cell (rhoA)', 'rhoA [Kg/m]');
 
 linkprop([tile_EJ_grid tile_rhoA_grid], {'View', 'XLim', 'YLim'});
@@ -109,5 +109,5 @@ ylim([-1 1] * min(max(ww / (2*pi), [], 'all'), 60) * 1e-3)
 % Dispersion diagram
 axes('parent', uitab(tabgroup, 'Title', ['Dispersion diagram | [P,Q]=[' num2str(P) ',' num2str(Q) ']']));
 plot_dispersion_diagram(mu, alpha / (2*pi), propagation_level);
-% plot_ScreenShot('ON-ON-OFF');
+overlay(modulation.label);
 % ylim([6 20])

@@ -5,14 +5,11 @@ function [measured, x, nodes, infos] = read_data_set(filename)
 
 if (nargin == 0)
     filename = uigetfile({'*.unv'}, 'Select experimental dataset', [pwd '\experimental\data\nonreciprocal']);
-    if (filename == 0)
-        error('No file chosen. Exit.');
-    end
 end
 
 [UffDataSets, Info] = readuff(['experimental/data/nonreciprocal/' filename]);
+assert(~isempty(Info.errcode) && all(Info.errcode == 0), 'Error while loading data.')
 
-assert(all(Info.errcode == 0), 'Error while loading data');
 
 nodes = UffDataSets(Info.dsTypes == 2411);
 nodes = rmfield(nodes{1}, {'nodeN', 'defCS', 'dispCS', 'color', 'dsType', 'binary'});

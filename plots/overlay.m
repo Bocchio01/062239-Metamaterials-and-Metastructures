@@ -1,4 +1,4 @@
-function plot_ScreenShot(file_name)
+function overlay(file_name, frequency)
 
 bgImage = imread(['plots/' file_name '.png']);
 
