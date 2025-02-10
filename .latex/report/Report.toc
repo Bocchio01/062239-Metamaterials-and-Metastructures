@@ -1,0 +1,45 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}Introduction}{4}{section.1}%
+\contentsline {paragraph}{Report structure}{4}{section.1}%
+\contentsline {paragraph}{Tools}{4}{section.1}%
+\contentsline {section}{\numberline {2}Theoretical background}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Transversal wave equation for beam elements}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Piezoelectric patches analysis}{5}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Piezoelectric constitutive equations}{5}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Shunted piezoelectric patches}{6}{subsubsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.3}Numerical methods for wave propagation analysis}{7}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Transfer Matrix Method (TMM)}{8}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}Plane Wave Expansion Method (PWEM)}{8}{subsubsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.3.3}Finite Difference Time Domain (FDTD) method}{9}{subsubsection.2.3.3}%
+\contentsline {paragraph}{Boundary conditions}{10}{equation.2.30}%
+\contentsline {paragraph}{Stability condition}{10}{equation.2.30}%
+\contentsline {section}{\numberline {3}Analysis of the shunted piezoelectric patches}{10}{section.3}%
+\contentsline {paragraph}{Shunt circuits layouts}{10}{section.3}%
+\contentsline {paragraph}{Negative capacitance realization}{11}{equation.3.32}%
+\contentsline {subsection}{\numberline {3.1}Sensitivity analysis}{12}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}$RLC_N$ shunt circuit}{12}{subsubsection.3.1.1}%
+\contentsline {paragraph}{Short circuit case}{12}{equation.3.37}%
+\contentsline {paragraph}{Open circuit case}{13}{figure.caption.9}%
+\contentsline {paragraph}{$L$ shunt circuit}{13}{figure.caption.10}%
+\contentsline {paragraph}{$RL$ shunt circuit}{15}{equation.3.39}%
+\contentsline {paragraph}{$RC_N$ shunt circuit}{17}{figure.caption.22}%
+\contentsline {subsection}{\numberline {3.2}Stability analysis}{18}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}$C_N$ shunting circuit}{18}{subsubsection.3.2.1}%
+\contentsline {paragraph}{Mechanical instability}{19}{figure.caption.28}%
+\contentsline {paragraph}{Electrical instability}{19}{equation.3.43}%
+\contentsline {section}{\numberline {4}Experimental approach}{19}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Setup}{19}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Space-Only Modulation}{20}{subsection.4.2}%
+\contentsline {paragraph}{OFF-OFF-OFF}{21}{subsection.4.2}%
+\contentsline {paragraph}{ON-ON-ON}{22}{equation.4.47}%
+\contentsline {paragraph}{ON-OFF-OFF}{22}{equation.4.49}%
+\contentsline {subsection}{\numberline {4.3}Space-Time Modulation}{23}{subsection.4.3}%
+\contentsline {paragraph}{Modulation $f_m = \pm 1 kHz$}{24}{equation.4.51}%
+\contentsline {paragraph}{Modulation $f_m = \pm 2 kHz$}{24}{figure.caption.37}%
+\contentsline {paragraph}{Modulation $f_m = \pm 3 kHz$}{25}{figure.caption.38}%
+\contentsline {section}{\numberline {5}Nonreciprocal behavior}{26}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Tests description}{26}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Results}{26}{subsection.5.2}%
+\contentsline {paragraph}{Lower directional band-gaps $f_{BG}^+ = [8, 9] kHz$}{27}{subsection.5.2}%
+\contentsline {paragraph}{Higher directional band-gaps $f_{BG}^- = [10, 11] kHz$}{27}{figure.caption.42}%
+\contentsline {section}{\numberline {6}Conclusions}{28}{section.6}%

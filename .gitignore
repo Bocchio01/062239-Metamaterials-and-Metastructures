@@ -1,8 +1,7 @@
-.latex
 .papers
-comsol
+*.mph
+*.unv
 resources
-.Brambilla
 
 # Windows default autosave extension
 *.asv

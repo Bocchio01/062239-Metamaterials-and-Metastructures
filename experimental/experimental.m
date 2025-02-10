@@ -6,7 +6,7 @@ try
     % [U, time, nodes, infos] = read_data_set('Scan_time_freezed.unv');
     [U, time, nodes, infos] = read_data_set();
 catch ME
-    disp([ME.message ' Interrupting.']);
+    fprintf(2, [ME.message '\n']);
     return
 end
 
@@ -32,8 +32,27 @@ mu = 2*pi*kk * 3*Beam().L;
 %% Plot
 
 figure('Name', ['Experimental: ' infos.filename])
+    set(0, 'DefaultLineLineWidth', 1);
 colormap(jet(64))
 
-ff_idxs = find(ff > 0 & ff < 20e3);
-mu_idxs = find(mu > -5*pi & mu < 0*pi);
-plot_dispersion_diagram(mu(mu_idxs), ff(ff_idxs), U_fft(ff_idxs, mu_idxs), 'surf');
+tiledlayout(1, 2)
+
+% ff_idxs = find(ff >= 0 & ff <= 20e3);
+% mu_idxs = find(mu >= -5*pi & mu <= 0*pi);
+% plot_dispersion_diagram('experimental', mu(mu_idxs), ff(ff_idxs), U_fft(ff_idxs, mu_idxs));
+% 
+% yregion(10, 11)
+% xlim([-5 -3.5])
+
+% yregion(8, 9)
+% xlim([3 4.5])
+% ylim([6 13])
+% 
+% idxs = find(time > 0e-3);
+% plot_waterfall(flip(nodes.x) * 1e+3, time(idxs), U(idxs, :), 15);
+% 
+% title('Waterfall plot $f_m = -2[khz]$ $f_e = 10.5[khz]$')
+% export_pdf_graphic(gcf, ['/EXP_' infos.filename])
+
+Ufft = abs(fftshift(fft(U(:, end), N2)));
+plot(abs(Ufft)/norm(Ufft, inf))

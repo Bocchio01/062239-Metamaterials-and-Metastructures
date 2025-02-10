@@ -1,37 +1,46 @@
-% clc
+clc
 clear variables
 % close all
 
-[STC, modulation] = assemble_STC('OFF-OFF-OFF');
+[STC, modulation] = assemble_STC('Sinusoidal (discrete)', 3000);
 
-E_mean = mean(arrayfun(@(unit) mean(unit.E{1}(linspace(1, modulation.period, 100))), STC));
-rho_mean = mean(arrayfun(@(unit) mean(unit.rho{1}), STC));
 
-% We suppose slightly higher velocity to avoid boundaries wave reflection
-c0 = 1.1 * sqrt(E_mean / rho_mean);
+%% Preliminary analysis of wave velocities
+
+[x_grid, t_grid] = meshgrid(linspace(0, modulation.lambda, 100), linspace(1, modulation.period, 100));
+[E_grid, J_grid, A_grid, rho_grid] = evaluate_structural_properties(x_grid, t_grid, STC);
+
+c0_longitudinal = sqrt(E_grid ./ rho_grid);
+c0_transverse   = sqrt((E_grid .* J_grid) ./ (rho_grid .* A_grid));
+
+clear x_grid t_grid
+clear E_grid J_grid A_grid rho_grid
+
 
 %% Excitation settings
-% The smaller fe or dfe, the longer the time needed
 
 excitation = struct();
-excitation.frequency  = 35e+03; %8.4 * 1e3;
-excitation.amplitude  = 5e+03; %8.0 * 1e3;
+excitation.frequency  = 10.5 * 1e3;
+excitation.amplitude  = 10 * 1e3;
 excitation.coordinate = 50 / 100;
+
+[~, final_time_force] = tone_burst(0, excitation.frequency, excitation.amplitude);
 
 
 %% Numerical simulation settings
 
-Nc = 100;
+Nc = 50;
+
+dx = STC(1).Beam.L - STC(1).Piezo.L;
+dt = 0.2 * dx^2 / max(c0_transverse, [], 'all');
+% dt = dx / max(c0_longitudinal, [], 'all');
 
 x_max = Nc * modulation.lambda;
-t_max = (1 - excitation.coordinate) * x_max / c0;
+t_max = 3/9*7*(1 - excitation.coordinate) * x_max / (mean(c0_transverse, 'all') / dx);
+% t_max = (1 - excitation.coordinate) * x_max / mean(c0_longitudinal, 'all');
 
-Nx = floor(12 * 3 * Nc);
-% Nt = floor(sqrt(2) * Nx);
-Nt = 1.5 * Nx * (t_max / x_max * c0);
-
-x = linspace(0, x_max, Nx - mod(Nx, 2));
-t = linspace(0, t_max, Nt - mod(Nt, 2));
+x = 0:dx:x_max + dx * mod(ceil(x_max/dx), 2);
+t = 0:dt:t_max + dt * mod(ceil(t_max/dt), 2);
 
 
 %% Structural properties and force evaluation
@@ -51,16 +60,22 @@ tic
 fprintf('FDFT simulation: \n');
 
 try
+
     % U = solve_FDTD_rod(x, t, excitation, E_grid, rho_grid);
-    U = solve_FDTD_beam(x, t, excitation, E_grid, rho_grid, J_grid, A_grid);
+    U = solve_FDTD_beam(x, t, excitation, EJ_grid, rhoA_grid);
+
+    if (any(isnan(U), 'all'))
+        error('Simulation diverged.')
+    end
+
 catch ME
-    disp(ME.message);
+    fprintf(2, [ME.message '\n']);
     return
 end
 
 fprintf('\b%.2fs\n', toc);
 
-U_norm = norm( U(:, 1+round(excitation.coordinate * size(U, 2))) );
+% U_norm = norm( U(:, 1+round(excitation.coordinate * size(U, 2))) );
 
 
 %% Fourier transform
@@ -70,13 +85,12 @@ UU = U;
 % UU = [Uz,Uz,Uz;Uz,U,Uz;Uz,Uz,Uz];
 
 scale = size(UU, 1) / size(U, 1);
-
 mu = (-scale*length(x)/2 : scale*length(x)/2-1) * modulation.lambda * 2*pi / (scale * max(x));
 ff = (-scale*length(t)/2 : scale*length(t)/2-1) * 1 / (scale * max(t));
 
 tic
 fprintf('FFT decomposition: \n');
-UU_fft = abs(fftshift(fft2(UU)));
+UU_fft = abs(fftshift(fft2(flipud(UU)))) * dt*dx;
 fprintf('\b%.2fs\n', toc);
 
 
@@ -90,28 +104,33 @@ figure_fdtd = figure('Name', ['FDTD: ' modulation.label ' @' num2str(modulation.
 tabgroup = uitabgroup(figure_fdtd);
 colormap(jet(64))
 
+% Create tabs
+tab1 = uitab(tabgroup, 'Title', ['Structural properties | size([x,t]) = [' num2str(length(x)) ',' num2str(length(t)) ']']);
+tab2 = uitab(tabgroup, 'Title', 'Force and Waterfall');
+tab3 = uitab(tabgroup, 'Title', ['Dispersion diagram | [Nx,Nt,Nc]=[' num2str(length(x)) ',' num2str(length(t)) ',' num2str(Nc) ']']);
 
-% % Structural properties
-% axes('parent', uitab(tabgroup, 'Title', ['Structural properties | size([x,t]) = [' num2str(length(x)) ',' num2str(length(t)) ']']));
-% x_idxs = 1:min(round(modulation.lambda / diff(x(1:2))), length(x));
-% t_idxs = 1:min(round(modulation.period / diff(t(1:2))), length(t));
-% tile_EJ_grid = plot_structural_property(x_grid(t_idxs, x_idxs), t_grid(t_idxs, x_idxs), EJ_grid(t_idxs, x_idxs), 'Unit cell (EJ)', 'EJ [Nm^2]');
-% tile_rhoA_grid = plot_structural_property(x_grid(t_idxs, x_idxs), t_grid(t_idxs, x_idxs), rhoA_grid(t_idxs, x_idxs), 'Unit cell (rhoA)', 'rhoA [Kg/m]');
-% linkprop([tile_EJ_grid tile_rhoA_grid], {'View', 'XLim', 'YLim'});
-% clear x_idxs t_idxs
-% 
-% 
-% % Force and Waterfall
-% axes('parent', uitab(tabgroup, 'Title', 'Force and Waterfall'));
+
+% Structural properties
+axes('parent', tab1);
+x_idxs = 1:min(round(modulation.lambda / diff(x(1:2))), length(x));
+t_idxs = 1:min(round(modulation.period / diff(t(1:2))), length(t));
+tile_EJ_grid = plot_structural_property(x_grid(t_idxs, x_idxs), t_grid(t_idxs, x_idxs), EJ_grid(t_idxs, x_idxs), 'Unit cell (EJ)', 'EJ [Nm^2]');
+tile_rhoA_grid = plot_structural_property(x_grid(t_idxs, x_idxs), t_grid(t_idxs, x_idxs), rhoA_grid(t_idxs, x_idxs), 'Unit cell (rhoA)', 'rhoA [Kg/m]');
+linkprop([tile_EJ_grid tile_rhoA_grid], {'View', 'XLim', 'YLim'});
+clear x_idxs t_idxs
+
+% Force and Waterfall
+axes('parent', tab2);
 % tile_force = plot_excitation_force(t, excitation.force);
-% tile_waterfall = plot_waterfall(x, t, U, 20);
-
+tile_waterfall = plot_waterfall(x, t, U, 20);
 
 % Dispersion diagram
-axes('parent', uitab(tabgroup, 'Title', ['Dispersion diagram | [Nx,Nt,Nc]=[' num2str(Nx) ',' num2str(Nt) ',' num2str(Nc) ']']));
-ff_idxs = find(ff > 0 & ff < 100e3);
-mu_idxs = find(mu > -5*pi & mu < 5*pi);
-plot_dispersion_diagram(mu(mu_idxs), ff(ff_idxs), UU_fft(ff_idxs, mu_idxs), 'surf');
-% overlay(modulation.label);
-title(['Tone burst @[f,amp]=[' num2str(excitation.frequency) ',' num2str(excitation.amplitude) ']'])
-ylim([0 80])
+axes('parent', tab3);
+ff_idxs = find(ff >= 0 & ff <= 20e3);
+mu_idxs = find(mu >= -5*pi & mu <= 5*pi);
+plot_dispersion_diagram('fdtd', mu(mu_idxs), ff(ff_idxs), UU_fft(ff_idxs, mu_idxs), 10);
+overlay(modulation.label, modulation.omega / (2*pi));
+ylim([0 20])
+grid minor
+
+tabgroup.SelectedTab = tab3;

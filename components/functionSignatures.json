@@ -1,0 +1,81 @@
+{
+    "_schemaVersion": "1.0.0",
+    "Shunt.Shunt": {
+        "description": "Construct a Shunt object with specified parameters.",
+        "inputs": [
+            {
+                "name": "label",
+                "kind": "required",
+                "type": ["char", "string", "choices={'OFF', '+inf', 'C-', 'RLC-', 'RLC', 'RL//C', 'RC//L'}"],
+                "purpose": "Shunt configuration label."
+            },
+            {
+                "name": "R0",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Resistance R0 (default: 1000e3 Ohm)."
+            },
+            {
+                "name": "R1",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Resistance R1 (default: 7.5e3 Ohm)."
+            },
+            {
+                "name": "R2",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Resistance R2 (default: 13.7e3 Ohm)."
+            },
+            {
+                "name": "C0",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Capacitance C0 (default: 4.4e-9 F)."
+            },
+            {
+                "name": "L",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Inductance L (default: 15e-3 H)."
+            },
+            {
+                "name": "R",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Resistance R (default: 1000 Ohm)."
+            },
+            {
+                "name": "C",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Capacitance C (default: 5e-9 F)."
+            }
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": "Shunt",
+                "purpose": "Instance of the Shunt class."
+            }
+        ]
+    },
+    "Shunt.getZModel": {
+        "description": "Compute the impedance model for the shunt configuration.",
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": ["Shunt"],
+                "purpose": "Instance of the Shunt class."
+            }
+        ],
+        "outputs": [
+            {
+                "name": "Z",
+                "type": "function_handle",
+                "purpose": "Function handle Z(w) returning impedance."
+            }
+        ]
+    }
+}

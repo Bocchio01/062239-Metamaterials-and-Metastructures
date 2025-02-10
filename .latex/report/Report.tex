@@ -1,0 +1,64 @@
+\documentclass[draft=false]{assignment}
+
+\usepackage{float}
+% \usepackage{tikz}
+\usepackage{circuitikz}
+\usepackage{adjustbox}
+\usepackage{titlesec}
+\usepackage{soul}
+\usepackage{csvsimple}
+
+\usepackage{bm}
+\usepackage{amsmath,amssymb}
+
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usetikzlibrary{shapes, arrows}
+
+
+\usetikzlibrary{calc,patterns,angles,quotes}
+\setlength{\parindent}{0pt}
+
+\hypersetup{
+pdftitle={Metamaterials and Metastructures},
+pdfsubject={Report of course project},
+pdfauthor={Tommaso Bocchietti, Konstantinos Georgoussis, Luciano Sarri},
+pdfkeywords={Politecnico di Milano, Metamaterials and Metastructures}
+}
+
+\begin{document}
+
+\title{Metamaterials and Metastructures \\ Study on Nonreciprocal Behavior in Time-Space Modulated Beams}
+\author{Tommaso Bocchietti 10740309 \\ Konstantinos Georgoussis 10992540 \\ (Luciano Sarri 11071336)}
+\date{A.Y. 2024/25}
+
+\maketitle
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{./pdf/Polimi_logo_coverpage.pdf}
+    \label{fig:Polimi_logo}
+\end{figure}
+
+\clearpage
+\tableofcontents
+\listoffigures
+\listoftables
+% \lstlistoflistings
+% \printglossary[type=\acronymtype]
+
+\clearpage
+\input{src/01 - introduction.tex}
+\input{src/02 - theoretical_background.tex}
+\input{src/03 - shunted_piezo_analysis.tex}
+\input{src/04 - experimental_validation.tex}
+\input{src/05 - nonreciprocal_behavior.tex}
+\input{src/06 - conclusions.tex}
+
+
+\vspace*{\fill}
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{bibliography}
+
+\end{document}

@@ -1,0 +1,40 @@
+\babel@toc {english}{}\relax 
+\contentsline {figure}{\numberline {1}{\ignorespaces Transversal displacement $w(x,t)$ of a beam element and forces acting on infinitesimal element ($dx$).}}{4}{figure.caption.2}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Example of piezoelectric patch.}}{5}{figure.caption.3}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Piezoelectric patch operating in $31$-mode.}}{6}{figure.caption.4}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Electrical scheme of a shunted piezoelectric patch.}}{7}{figure.caption.5}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Shunt layouts: (a) Series $RLC$ shunt, (b) Parallel $RL//C$ shunt, (c) Parallel $RC//L$ shunt.}}{11}{figure.caption.6}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Negative capacitance realization using an OP-AMP.}}{11}{figure.caption.7}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Unit cell composed by a beam substrate and 3 pairs of piezoelectric patches.}}{12}{figure.caption.8}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Short circuit case.}}{13}{figure.caption.9}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Open circuit case.}}{13}{figure.caption.10}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Analysis of $Y^{SU}$ for the purely inductive shunt circuit.}}{14}{figure.caption.12}%
+\contentsline {figure}{\numberline {11}{\ignorespaces RLC shunt circuit with $R = 0 \Omega $, $L = 0 H$, and $C = \infty F$.}}{14}{figure.caption.13}%
+\contentsline {figure}{\numberline {12}{\ignorespaces RLC shunt circuit with $R = 0 \Omega $, $L = 0.02 H$, and $C = \infty F$.}}{14}{figure.caption.14}%
+\contentsline {figure}{\numberline {13}{\ignorespaces RLC shunt circuit with $R = 0 \Omega $, $L = 0.10 H$, and $C = \infty F$.}}{14}{figure.caption.15}%
+\contentsline {figure}{\numberline {14}{\ignorespaces RLC shunt circuit with $R = 0 \Omega $, $L = 1 H$, and $C = \infty F$.}}{15}{figure.caption.16}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Analysis of $Y^{SU}$ for the resistive-inductive shunt circuit.}}{15}{figure.caption.18}%
+\contentsline {figure}{\numberline {16}{\ignorespaces RLC shunt circuit with $R = 0 \Omega $, $L = 0.03 H$, and $C = \infty F$.}}{16}{figure.caption.19}%
+\contentsline {figure}{\numberline {17}{\ignorespaces RLC shunt circuit with $R = 50 \Omega $, $L = 0.03 H$, and $C = \infty F$.}}{16}{figure.caption.20}%
+\contentsline {figure}{\numberline {18}{\ignorespaces RLC shunt circuit with $R = 200 \Omega $, $L = 0.03 H$, and $C = \infty F$.}}{16}{figure.caption.21}%
+\contentsline {figure}{\numberline {19}{\ignorespaces RLC shunt circuit with $R = 1000 \Omega $, $L = 0.03 H$, and $C = \infty F$.}}{16}{figure.caption.22}%
+\contentsline {figure}{\numberline {20}{\ignorespaces Analysis of $Y^{SU}$ for the resistive-(negative) capacitive shunt circuit.}}{17}{figure.caption.24}%
+\contentsline {figure}{\numberline {21}{\ignorespaces RLC shunt circuit with $R = 1000 \Omega $, $L = 0 H$, and $C = -30 nF$.}}{17}{figure.caption.25}%
+\contentsline {figure}{\numberline {22}{\ignorespaces RLC shunt circuit with $R = 1000 \Omega $, $L = 0 H$, and $C = -7 nF$.}}{17}{figure.caption.26}%
+\contentsline {figure}{\numberline {23}{\ignorespaces RLC shunt circuit with $R = 1000 \Omega $, $L = 0 H$, and $C = -5 nF$.}}{18}{figure.caption.27}%
+\contentsline {figure}{\numberline {24}{\ignorespaces Stability analysis of the negative capacitance shunting circuit.}}{19}{figure.caption.28}%
+\contentsline {figure}{\numberline {25}{\ignorespaces Schematic of the experimental setup.}}{20}{figure.caption.29}%
+\contentsline {figure}{\numberline {26}{\ignorespaces Band structure for the OFF-OFF-OFF configuration.}}{21}{figure.caption.31}%
+\contentsline {figure}{\numberline {27}{\ignorespaces Comparison between TMM and Comsol Multiphysics for the OFF-OFF-OFF configuration.}}{21}{figure.caption.32}%
+\contentsline {figure}{\numberline {28}{\ignorespaces Band structure for the ON-ON-ON configuration.}}{22}{figure.caption.33}%
+\contentsline {figure}{\numberline {29}{\ignorespaces Comparison between TMM and Comsol Multiphysics for the ON-ON-ON configuration.}}{22}{figure.caption.34}%
+\contentsline {figure}{\numberline {30}{\ignorespaces Band structure for the ON-OFF-OFF configuration.}}{23}{figure.caption.35}%
+\contentsline {figure}{\numberline {31}{\ignorespaces Comparison between TMM and Comsol Multiphysics for the ON-OFF-OFF configuration.}}{23}{figure.caption.36}%
+\contentsline {figure}{\numberline {32}{\ignorespaces Dispersion diagram for the case of modulation frequency $f_m = \pm 1 kHz$.}}{24}{figure.caption.37}%
+\contentsline {figure}{\numberline {33}{\ignorespaces Dispersion diagram for the case of modulation frequency $f_m = \pm 2 kHz$.}}{25}{figure.caption.38}%
+\contentsline {figure}{\numberline {34}{\ignorespaces Dispersion diagram for the case of modulation frequency $f_m = \pm 3 kHz$.}}{25}{figure.caption.39}%
+\contentsline {figure}{\numberline {35}{\ignorespaces Dispersion diagram for the case of modulation frequency $f_m = \pm 2 kHz$.}}{26}{figure.caption.40}%
+\contentsline {figure}{\numberline {36}{\ignorespaces Waterfall plot of the beam displacement for the case excitation at $f_e = 8.4 kHz$ and modulation at $f_m = +2 kHz$ (left) and $f_m = -2 kHz$ (right).}}{27}{figure.caption.41}%
+\contentsline {figure}{\numberline {37}{\ignorespaces Normalized spectra of the beam displacement at the end of the beam for the case of excitation at $f_e = 8.4 kHz$ and modulation at $f_m = \pm 2 kHz$.}}{27}{figure.caption.42}%
+\contentsline {figure}{\numberline {38}{\ignorespaces Waterfall plot of the beam displacement for the case excitation at $f_e = 10.5 kHz$ and modulation at $f_m = +2 kHz$ (left) and $f_m = -2 kHz$ (right).}}{28}{figure.caption.43}%
+\contentsline {figure}{\numberline {39}{\ignorespaces Spectra of the beam displacement at the end of the beam for the case of excitation at $f_e = 10.5 kHz$ and modulation at $f_m = \pm 2 kHz$.}}{28}{figure.caption.44}%

@@ -1,0 +1,160 @@
+\section{Analysis of the shunted piezoelectric patches}
+\label{sec:analysis_shunted_piezo}
+
+In Section \ref{subsec:piezoelectric_patches_analysis} we have introduced the concept of shunted piezoelectric patches and we have shown how the mechanical admittance of the piezoelectric patch is influenced by the electrical impedance of the shunt circuit.
+
+In this section, we want to further characterize this relationship by analyzing the effects of different shunt circuits on the system.
+A sensitivity analysis is performed by considering the connection of the piezoelectric patches to a host beam structure and by analyzing the position of the band-gaps in the dispersion relation of the system.
+While different shunting layouts are presented in the paragraph below, for the sensitivity analysis we focus on the RLC circuit only, as it is the one that is also used in the experimental analysis.
+
+Successively, for the case of shunt circuits composed by active elements, we proposed a breif stability analysis.
+
+
+\paragraph{Shunt circuits layouts}
+
+As for the shunt circuits, three different layouts can be considered, as shown in Figure \ref{fig:shunt_layouts}.
+
+\begin{figure}[H]
+
+    \begin{minipage}{0.27\textwidth}
+
+        \centering
+
+        \begin{tikzpicture}[european voltages]
+
+            % Upper and lower horizontal lines
+            \draw (0,0) to [short] ++(3,0);
+            \draw (0,-4.5) to [short] ++(3,0);
+
+            % Piezo
+            \draw (0,0) to [C, l=$C_p$, o-o] ++(0,-4.5);
+
+            % Shunt
+            \draw (3,0)
+            to [R, l=$R$, o-] ++(0,-2)
+            to [L, l=$L$] ++(0,-1)
+            to [C, l=$C$, -o] ++(0,-1.5);
+
+        \end{tikzpicture}
+
+    \end{minipage}
+    %
+    \hfill
+    %
+    \begin{minipage}{0.31\textwidth}
+
+        \centering
+
+        \begin{tikzpicture}[european voltages]
+
+            % Upper and lower horizontal lines
+            \draw (0,0) to [short] ++(4,0);
+            \draw (0,-4.5) to [short] ++(4,0);
+
+            % Piezo
+            \draw (0,0) to [C, l=$C_p$, o-o] ++(0,-4.5);
+
+            % Shunt capacitor
+            \draw (2.5,0) to [C, l=$C$, o-o] ++(0,-4.5);
+
+            % Shunt resistor and inductor
+            \draw (4,0) to [R, l=$R$, o-] ++(0,-2.5) to [L, l=$L$, -o] ++(0,-2);
+
+        \end{tikzpicture}
+
+    \end{minipage}
+    %
+    \hfill
+    %
+    \begin{minipage}{0.31\textwidth}
+
+        \centering
+
+        \begin{tikzpicture}[european voltages]
+
+            % Upper and lower horizontal lines
+            \draw (0,0) to [short] ++(4,0);
+            \draw (0,-4.5) to [short] ++(4,0);
+
+            % Piezo
+            \draw (0,0) to [C, l=$C_p$, o-o] ++(0,-4.5);
+
+            % Shunt capacitor
+            \draw (2.5,0) to [R, l=$R$, o-] ++(0,-2.5) to [C, l=$C$, -o] ++(0,-2);
+
+            % Shunt resistor and inductor
+            \draw (4,0) to [L, l=$L$, o-o] ++(0,-4.5);
+
+        \end{tikzpicture}
+
+    \end{minipage}
+
+    \caption{Shunt layouts: (a) Series $RLC$ shunt, (b) Parallel $RL//C$ shunt, (c) Parallel $RC//L$ shunt.}
+    \label{fig:shunt_layouts}
+
+\end{figure}
+
+From basic circuit theory, we can write the electrical impedance of the three shunt circuits as follows:
+
+\begin{equation}
+    \begin{aligned}
+        Z_{su}^{RLC}   & = R + sL + \frac{1}{sC}                                                                                          \\
+        Z_{su}^{RL//C} & = \left(\frac{1}{R + sL} + sC\right)^{-1} = \frac{R + sL}{1 + (R + sL)sC} = \frac{R + sL}{1 - \omega^2LC - sRC}  \\
+        Z_{su}^{RC//L} & = \left(\frac{1}{R + \frac{1}{sC}} + \frac{1}{sL} \right)^{-1} = \frac{-\omega^2 RLC + sL}{1 - \omega^2LC - sRC}
+    \end{aligned}
+    \label{eq:shunt_circuits_impedance}
+\end{equation}
+
+Where $s = j\omega$ is the complex frequency and $\omega$ is the angular frequency.
+
+
+
+\paragraph{Negative capacitance realization}
+
+When thinking to classical electrical components it's obvious, from an energetic point of view, that the values of $R$, $L$, and $C$ must be all non-negative.
+However, thanks to the use of appropriate external circuits, it is possible to realize equivalent electrical components having negative values.
+In particular, given that this is also the case in the experimental approach, we consider the possibility of having negative capacitance in the shunt circuits.
+
+In order to realize a negative capacitance, the circuit depicted in Figure \ref{fig:negative_capacitance_realization} can be used.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[european voltages]
+
+        \node[op amp] (OPAMP) {};
+
+        \draw(OPAMP.out) to [short] ++(0, +2.9) to [C, l=$C_0$] ++(-2.5, 0) |- (OPAMP.-);
+        \draw(OPAMP.out) to [short] ++(0, +1.5) to [R, l=$R_0$] ++(-2.5, 0) |- (OPAMP.-);
+        \draw(OPAMP.out) to [short] ++(0, -1.5) to [R, l=$R_2$] ++(-2.5, 0) |- (OPAMP.+);
+
+        \draw(OPAMP.-) to [short] ++(-2, 0);
+        \draw(OPAMP.+) to [R, l=$R_1$] ++(-2, 0);
+
+    \end{tikzpicture}
+    \caption{Negative capacitance realization using an OP-AMP.}
+    \label{fig:negative_capacitance_realization}
+
+\end{figure}
+
+The circuit depicted in Figure \ref{fig:negative_capacitance_realization} is equivalent to a negative capacitance having the following value:
+
+\begin{equation}
+    C_{eq} = -C_N = -\frac{R_1}{R_2} \left(\frac{1}{R_0} + sC_0\right)^{-1}
+    \label{eq:negative_capacitance_real}
+\end{equation}
+
+One can notice the presence of the resistance $R_0$ parallel to the capacitance $C_0$.
+While $R_1$ and $R_2$ are used to scale the value of the negative capacitance, $R_0$ is a key component of the circuit that enable a bias path for the current flowing through the negative capacitance avoiding the saturation of the OP-AMP.
+Ideally, $R_0$ should be infinite, leading to the following expression for the ideal negative capacitance:
+
+\begin{equation}
+    C_{eq} = -C_N = -\frac{R_1}{R_2} \left(sC_0\right)^{-1}
+    \label{eq:negative_capacitance_ideal}
+\end{equation}
+
+Of course, being the OP-AMP an active element powered by an external power supply, its presence in the circuit can lead to instability issues.
+A dedicated analysis focusing on this aspect is proposed in Section \ref{subsec:stability_analysis}.
+
+
+\input{src/03.1 - sensitivity_analysis.tex}
+\input{src/03.2 - stability_analysis.tex}

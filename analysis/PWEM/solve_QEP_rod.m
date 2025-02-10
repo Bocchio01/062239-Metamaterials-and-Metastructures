@@ -32,7 +32,7 @@ K_locals_multiplier = reshape(K_locals_multiplier, 1, 1, 2*P + 1, 2*P + 1);
 
 K_locals = K_locals .* K_locals_multiplier;
 
-% Assemble K_global
+% Assembly global matrices
 for block = 1:numel(SS)
     
     idxs1 = (1:2*Q + 1) + (SS(block) - 1) * (2*Q + 1);

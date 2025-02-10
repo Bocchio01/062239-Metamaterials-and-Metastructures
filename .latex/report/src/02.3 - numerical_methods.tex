@@ -1,0 +1,224 @@
+\subsection{Numerical methods for wave propagation analysis}
+\label{subsec:numerical_methods_for_wave_propagation_analysis}
+
+In this section, we introduce the numerical methods used to simulate the wave propagation in a generic modulated beam structure.
+In particular, one of the main results that can be obtained by using these methods is the dispersion relation of the system, which describes the relationship between the frequency and the wavenumber of the propagating waves.
+Once the dispersion relation is known, it is possible to analyze the behavior of the system under different conditions and to design the structure to achieve specific properties as will be shown in the following sections.
+
+The following methods are introduced:
+
+\begin{itemize}
+    \item Transfer Matrix Method (TMM): used to analyze the wave propagation in case of purely spatial modulation structure;
+    \item Plane Wave Expansion Method (PWEM): allow considering not only space modulation but also time modulation;
+    \item Finite Difference Time Domain (FDTD) method: a general-purpose method that can be used to simulate a large family of problems requiring the solution of partial differential equations.
+\end{itemize}
+
+
+
+\subsubsection{Transfer Matrix Method (TMM)}
+\label{subsubsec:transfer_matrix_method_tmm}
+
+One of the most common methods used to analyze the wave propagation in a beam structure is the Transfer Matrix Method (TMM).
+
+The main idea of the TMM is to consider and analyze the system as a series of interconnected elements, each one characterized by a transfer matrix that relates the states at the left and right of the element.
+By setting continuity between the states at the boundaries of the elements, and imposing the periodicity of the solution via Floquet theorem, it is possible to obtain the dispersion relation of the system solving an eigenvalue problem.
+
+Given that with the TMM it's not possible to account for time-varying material properties, we limit our analysis to the case of beam structures with spatially varying material properties only, modelled by the following equation of motion:
+
+\begin{equation}
+    \frac{\partial^2}{\partial x^2} \left( E J(x) \frac{\partial^2 w(x,t)}{\partial x^2} \right) = - \rho A(x) \frac{\partial^2 w(x,t)}{\partial t^2}
+\end{equation}
+
+Based on the equation above, we can define the state vector $y(x)$ as the displacement $w(x,t)$ and its derivatives up to $w^{(3)}(x,t)$.
+We can also give a physical interpretation to the state vector considering instead the displacement, slope, bending moment, and shear force of the beam:
+
+\begin{equation}
+    y(x) =
+    \begin{bmatrix}
+        v(x)      \\
+        \theta(x) \\
+        M(x)      \\
+        T(x)
+    \end{bmatrix} =
+    \begin{bmatrix}
+        w(x)                                     \\
+        \frac{\partial w(x)}{\partial x}         \\
+        -EJ \frac{\partial^2 w(x)}{\partial x^2} \\
+        -EJ \frac{\partial^3 w(x)}{\partial x^3}
+    \end{bmatrix}
+\end{equation}
+
+Once the state vector is defined, we write the governing equation of motion in the state-space form:
+
+\begin{equation}
+    \frac{\partial y(x)}{\partial x} = A(x) y(x) =
+    \begin{bmatrix}
+        0                  & 1 & 0                & 0 \\
+        0                  & 0 & \frac{-1}{EJ(x)} & 0 \\
+        0                  & 0 & 0                & 1 \\
+        \omega^2 \rho A(x) & 0 & 0                & 0
+    \end{bmatrix} y(x)
+\end{equation}
+
+Where $\omega$ is the angular frequency of the travelling wave in the beam.
+The solution of the equation above can be written as:
+
+\begin{equation}
+    y(x) = T(x) y(0) = e^{x A(x)} y(0)
+\end{equation}
+
+Imposing now the continuity of the states at the boundaries of the elements, we can write the transfer matrix of the system as:
+
+\begin{equation}
+    T = T(x_r) T(x_{r-1}) \ldots T(x_1) = \prod_{i=r}^{1} T(x_i)
+\end{equation}
+
+Which leads to the following periodicity condition in space:
+
+\begin{equation}
+    y(x + \lambda_m) = T y(x)
+\end{equation}
+
+Notice, however, that the Floquet theorem can also be used to impose periodicity in space, and combined with the above equation, it leads to the following eigenvalue problem:
+
+\begin{equation}
+    \begin{aligned}
+        y(x + \lambda_m) & = T y(x)         \\
+        y(x + \lambda_m) & = e^{i \mu} y(x)
+    \end{aligned}
+    \rightarrow
+    T y(x) = e^{i \mu} y(x)
+    \label{eq:transfer_matrix_method_eigenvalue_problem}
+\end{equation}
+
+Where $\mu$ is the Floquet exponent or the non-dimensional wavenumber, and it can be used to obtain the dispersion relation of the system given that $\mu = \kappa \lambda_m$.
+
+It's clear how the TMM corresponds to an inverse solution for the dispersion, given that the eigenvalue problem in Equation \ref{eq:transfer_matrix_method_eigenvalue_problem} can be solved to obtain the Floquet exponent $\mu$ as a function of the angular frequency $\omega$, on which $T$ depends.
+
+
+
+\subsubsection{Plane Wave Expansion Method (PWEM)}
+\label{subsubsec:plane_wave_expansion_method_pwem}
+
+The Plane Wave Expansion Method (PWEM) is a numerical method used to solve plane waves in periodic structures.
+Its more general version, often referred to as Generalized Plane Wave Expansion Method (GPWEM), allows for the analysis of waves without any restriction on the form of the wave itself.
+The main advantage with respect to the TMM is that the PWEM can be used to analyze not only spatially varying material properties but also time-varying ones.
+
+The idea here is to move to the frequency domain via Fourier series expansion and, upon the imposition of the periodicity of the solution via Floquet theorem, to solve the wave equation which will now be in the form of a Quadratic Eigenvalues Problem (QEP).
+A main difference with respect to the TMM is that the solution of the PWEM is a direct one, meaning that the dispersion relation is obtained by imposing the wavenumber $\kappa$ and solving for the frequency $\omega$.
+
+For the problem at hand, we consider dealing with structural beam properties varying both in space and in time, with a periodicity dictated by $\lambda_m$ and $T_m$ respectively.
+The Fourier series expansion of the structural properties then reads:
+
+\begin{equation}
+    \begin{aligned}
+        \begin{aligned}
+            EJ(x, t) & = \sum_{m,n} \left[ \frac{1}{\lambda_m T_m} \int_{-\frac{\lambda_m}{2}}^{\frac{\lambda_m}{2}} \int_{-\frac{T_m}{2}}^{\frac{T_m}{2}} EJ(x, t) e^{-i (m\kappa_m x - n\omega_m t)}dx dt \right] e^{i (m\kappa_m x - n\omega_m t)} \\
+                     & = \sum_{m,n} \widehat{EJ}_{m,n} e^{i (m\kappa_m x - n\omega_m t)}
+        \end{aligned} \\
+        \begin{aligned}
+            \rho A(x, t) & = \sum_{m,n} \left[ \frac{1}{\lambda_m T_m} \int_{-\frac{\lambda_m}{2}}^{\frac{\lambda_m}{2}} \int_{-\frac{T_m}{2}}^{\frac{T_m}{2}} \rho A(x, t) e^{-i (m\kappa_m x - n\omega_m t)}dx dt \right] e^{i (m\kappa_m x - n\omega_m t)} \\
+                         & = \sum_{m,n} \widehat{\rho A}_{m,n} e^{i (m\kappa_m x - n\omega_m t)}
+        \end{aligned}
+    \end{aligned}
+\end{equation}
+
+With similar fashion, we can impose the Floquet solution to the displacement $w(x, t)$ and expand it in the frequency domain as:
+
+\begin{equation}
+    w(x, t) = e^{i (\kappa x - \omega t)} \sum_{p, q} \widehat{w}_{p,q} e^{i (p\kappa_m x - q\omega_m t)}
+\end{equation}
+
+After some nontrivial algebraic manipulations, that include the integration over the space and time domains and the application of the orthogonality of the Fourier series, the wave equation can be rewritten in the following form:
+
+\begin{equation}
+    \sum_{p, q} \left( p \kappa_m + \kappa \right)^2 \left( s \kappa_m + \kappa \right)^2 \widehat{EJ}_{s-p, r-q} \widehat{w}_{p,q} = \sum_{p, q} \left( q \omega_m + \omega \right) \left( r \omega_m + \omega \right) \widehat{\rho A}_{s-p, r-q} \widehat{w}_{p,q}
+    \label{eq:plane_wave_expansion_method_wave_equation}
+\end{equation}
+
+Equation \ref{eq:plane_wave_expansion_method_wave_equation} is basically the equivalent of Equation \ref{eq:beam_equation_of_motion_transversal_displacement} in the frequency domain, considering $P$ and $Q$ as the number of harmonics in space and time respectively.
+
+The solution of Equation \ref{eq:plane_wave_expansion_method_wave_equation} can be obtained by solving the Quadratic Eigenvalues Problem (QEP) associated to Equation \ref{eq:plane_wave_expansion_method_wave_equation} for the frequency $\omega$ as a function of the wavenumber $\kappa$.
+In particular, the QEP can be written as:
+
+\begin{equation}
+    \left( \omega^2 L_2 (\kappa) + \omega L_1 (\kappa) + L_0 (\kappa) \right) \widehat{w} = 0
+\end{equation}
+
+Where $L_2 (\kappa)$ and $L_1 (\kappa)$ are in some sense associated to the mass matrices of the system, while $L_0 (\kappa)$ represent the equivalent stiffness matrix given as a summation of contributions relative to both the flexural stiffness ($EJ$) and the inertial properties ($\rho A$) of the beam.
+Notice also that the size of the QEP is $(2Q + 1)\times(2P + 1)$, which can be bottleneck in terms of computational resources given that it should be solved for each value of the wavenumber $\kappa$.
+
+
+
+\subsubsection{Finite Difference Time Domain (FDTD) method}
+\label{subsubsec:finite_difference_time_domain_fdtd_method}
+
+The Finite Difference Time Domain (FDTD) method is a general-purpose method used to solve partial differential equations.
+It operates by discretizing both the spatial and temporal domains and approximating differential operators using finite differences.
+
+By adopting a Taylor series expansion, the second-order and fourth-order finite difference approximations for a function $f(x)$ are given by:
+
+\begin{equation}
+    \frac{\partial^2 f(x)}{\partial x^2} \approx \frac{f(x + \Delta x) - 2 f(x) + f(x - \Delta x)}{\Delta x^2}
+    \label{eq:finite_difference_second_order}
+\end{equation}
+
+\begin{equation}
+    \frac{\partial^4 f(x)}{\partial x^4} \approx \frac{f(x + 2 \Delta x) - 4 f(x + \Delta x) + 6 f(x) - 4 f(x - \Delta x) + f(x - 2 \Delta x)}{\Delta x^4}
+    \label{eq:finite_difference_fourth_order}
+\end{equation}
+
+As done in the Section \ref{subsubsec:plane_wave_expansion_method_pwem}, we can consider a beam structure with properties varying both in space and in time (periodicity dictated by $\lambda_m$ and $T_m$ respectively).
+
+One could directly apply the finite difference method to Equation \ref{eq:beam_equation_of_motion_transversal_displacement}, but this would require to compute the displacement in a given cell based on the derivative of the displacement of the neighboring cells.
+Instead, in order to avoid relying on possibly cumulative approximations, we introduce a dummy variable $v(x,t)$ such that its second spatial derivative corresponds to the displacement $w(x,t)$.
+The problem can now be rewritten as:
+
+\begin{equation}
+    \begin{cases}
+        EJ(x, t) \frac{\partial^4 v(x,t)}{\partial x^4} = - \rho A(x, t) \frac{\partial^2 v(x,t)}{\partial t^2} \\
+        w(x,t) = \frac{\partial^2 v(x,t)}{\partial x^2}
+    \end{cases}
+\end{equation}
+
+Discretizing the space and time domains and applying finite difference approximations (Equations \ref{eq:finite_difference_second_order} in time and \ref{eq:finite_difference_fourth_order} in space), we derive the following set of update equations:
+
+\begin{equation}
+    \begin{cases}
+        \begin{aligned}
+            v(t + \Delta t, x) = &
+            -\left( \frac{c(x, t)^2 \Delta t}{\Delta x^2} \right)^2
+            \left[ v(t, x + 2\Delta x) - 4 v(t, x + \Delta x) + 6 v(t, x) - 4 v(t, x - \Delta x) + v(t, x - 2\Delta x) \right] + \\
+                                 & + 2 v(t, x) - v(t - \Delta t, x)                                                              \\
+        \end{aligned} \\
+        w(t + \Delta t, x) = \frac{1}{\Delta x^2} \left[ v(t + \Delta t, x + \Delta x) - 2 v(t + \Delta t, x) + v(t + \Delta t, x - \Delta x) \right]
+    \end{cases}
+\end{equation}
+
+Where $c(x, t) = (EJ(x, t) / \rho A(x, t))^{1/4}$ is the equivalent traversal wave speed in the beam.
+
+
+\paragraph{Boundary conditions}
+
+Boundary conditions can be enforced by setting appropriate values for the displacement and dummy variable at the domain limits.
+Dirichlet boundary conditions, for instance, can be implemented by setting the displacement to zero at the boundaries ($w(t, x_{min}) = w(t, x_{max}) = 0$).
+
+On the other hand, given that we are dealing with finite domains, it's also important to avoid or at least minimize the reflection of the waves at the boundaries.
+To do so, one can simply introduce a buffer zone along the space dimension with properties equal to the ones of the beam structure so that the waves can travel through it without being reflected back in the domain of interest.
+Simulation time can also be tuned in order to minimize the reflection of the waves back from the boundaries.
+
+Excitation forces can be imposed at selected points by modifying the values of the displacement and the dummy variable at the corresponding locations at each time step of the simulation.
+
+
+\paragraph{Stability condition}
+
+The numerical stability of the FDTD method is governed by the Courant-Friedrichs-Lewy (CFL) condition, which dictates the maximum allowable time step to ensure stable wave propagation.
+The idea is that the simulated wave should not travel faster than the speed of the wave in the real system.
+
+The CFL condition is given by:
+
+\begin{equation}
+    \left( \frac{max|c(x, t)^2| \Delta t}{\Delta x^2} \right)^2 \leq C_{max}
+\end{equation}
+
+Where $C_{max}$ is a constant that depends on the specific problem under investigation, but it that can be set to $1$ in most cases.

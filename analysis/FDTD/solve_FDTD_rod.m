@@ -6,7 +6,8 @@ offset = abs(length(x_vector) - 2*coordinate);
 dx = diff(x_vector(1:2));
 dt = diff(t_vector(1:2));
 
-if (dt > min(dx ./ sqrt(E_grid ./ rho_grid), [], 'all'))
+% Courant-Friedrichs-Lewy condition
+if (max(sqrt(E_grid ./ rho_grid) * dt/dx, [], 'all') > 1)
     error('Stability criterion not met. Decrease dt.')
 end
 
@@ -23,10 +24,10 @@ for t = 2:size(v, 1) - 1
         v(t+1, x) = (dt/dx)^2 / rho_grid(t, x) * E_grid(t, x) * (v(t, x+1) - 2*v(t, x) + v(t, x-1)) + 2*v(t, x) - v(t-1, x);
     end
 
-    u(t+1, 2:end) = diff(v(t+1, :)) / dx;
-
 end
 
+x = 2:size(v, 2) - 1;
+u(:, 3:end) = (v(:, x+1) -v(:, x-1)) / dx;
 u = u(:, offset + (1:length(x_vector)));
 
 end

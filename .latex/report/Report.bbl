@@ -1,0 +1,32 @@
+\begin{thebibliography}{1}
+
+\bibitem{CourseSlides}
+G.~Cazzulani and G.~Brambilla.
+\newblock 062239 - metamaterials and metastructures, 2024.
+\newblock Lecture slides, Politecnico di Milano.
+
+\bibitem{HAGOOD1991243}
+N.W. Hagood and A.~{von Flotow}.
+\newblock Damping of structural vibrations with piezoelectric materials and
+  passive electrical networks.
+\newblock {\em Journal of Sound and Vibration}, 146(2):243--268, 1991.
+
+\bibitem{Riva2020}
+J.~Marconi, E.~Riva, M.~Di~Ronco, G.~Cazzulani, F.~Braghin, and M.~Ruzzene.
+\newblock Experimental observation of nonreciprocal band gaps in a
+  space-time-modulated beam using a shunted piezoelectric array.
+\newblock {\em Phys. Rev. Appl.}, 13:031001, Mar 2020.
+
+\bibitem{RIVA2019172}
+E.~Riva, J.~Marconi, G.~Cazzulani, and F.~Braghin.
+\newblock Generalized plane wave expansion method for non-reciprocal discretely
+  modulated waveguides.
+\newblock {\em Journal of Sound and Vibration}, 449:172--181, 2019.
+
+\bibitem{Trainiti_2016}
+G~Trainiti and M~Ruzzene.
+\newblock Non-reciprocal elastic wave propagation in spatiotemporal periodic
+  structures.
+\newblock {\em New Journal of Physics}, 18(8):083047, August 2016.
+
+\end{thebibliography}
