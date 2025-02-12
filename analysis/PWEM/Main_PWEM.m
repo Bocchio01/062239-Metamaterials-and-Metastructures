@@ -2,7 +2,7 @@
 clear variables
 % close all
 
-[STC, modulation] = assemble_STC('Sinusoidal (discrete)', 3000);
+[STC, modulation] = assemble_STC('Sinusoidal (continuos)', 3000);
 
 
 %% Structural properties evaluation
@@ -55,7 +55,7 @@ rhoA_hat = 1/modulation.period * 1/modulation.lambda * fftshift(fft2(flipud(rhoA
 %% Quadratic eigenvalue problem
 % The number of harmonics considered is governed by P (space) and Q (time)
 
-mu = linspace(-5*pi, 5*pi, 200);
+mu = linspace(-5*pi, 5*pi, 100);
 P = 30;
 Q = 1;
 

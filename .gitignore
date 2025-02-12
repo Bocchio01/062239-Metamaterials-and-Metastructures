@@ -1,6 +1,7 @@
 .papers
 *.mph
 *.unv
+_exporting
 resources
 
 # Windows default autosave extension

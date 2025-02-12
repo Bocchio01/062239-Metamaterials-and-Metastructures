@@ -1,0 +1,83 @@
+\section{Introduction}
+
+
+\begin{frame}{Introduction to nonreciprocity}
+
+    The principle of reciprocity states that the in a linear time-invariant system (LTI), waves propagate from $A$ to $B$ in the same way as from $B$ to $A$.
+    The violation of this principle is referred to as \textbf{nonreciprocal} behavior.
+
+    \vspace{9pt}
+
+    One question arise: \textbf{is it possible to design a system that achieves nonreciprocal behavior?}
+
+    % Breaking reciprocity in wave propagation enables the development of one-way communication devices with enhanced performance.
+
+\end{frame}
+
+
+
+\begin{frame}{Experimental setup}
+
+    The experimental setup\footnotemark[1] is composed of an array of shunted piezoelectric patches spaced $2$ mm apart placed on an aluminum beam substrate.
+    Toggling the switches that control the connection between the power supply and each negative capacitance shunting circuit, allows to modulate the substrate properties.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.9\textwidth]{img/experimental_setup_scheme.png}
+        \caption{Beam substrate and array of piezoelectric patches (a), Spatio-Temporal cell and shunting circuits (b).}
+    \end{figure}
+
+    Out-of-plane velocity field is measured using a Polytec 3D laser Doppler vibrometer.
+
+    \footnotetext[1]{For numerical values and detailed description, refer to the attached project report (Section 4.1).}
+
+\end{frame}
+
+
+
+\begin{frame}{Experimental setup}
+
+    By connecting the piezoelectric patches to the beam, the effective properties of the system are modified.
+
+    \vspace{9pt}
+
+    \begin{columns}[c, onlytextwidth]
+
+        \begin{column}{0.6\textwidth}
+
+            \begin{figure}[H]
+
+                \centering
+
+                \begin{tikzpicture}[scale=1.5]
+
+                    % Beam
+                    \draw[fill=gray!20] (0,0) rectangle (2.5,0.3) node[midway] {$*$};
+                    \draw[fill=gray!50] (2.5,0) rectangle (3.5,0.3) node[midway] {$b$};
+
+                    % Piezoelectric patches
+                    \draw[fill=white] (0, 0.3) rectangle (2.5, 0.6) node[midway] {$p$};
+                    \draw[fill=white] (0, 0.0) rectangle (2.5, -0.3) node[midway] {$p$};
+
+                \end{tikzpicture}
+
+                \caption{Connection between piezoelectric patches and beam.}
+
+            \end{figure}
+
+        \end{column}
+
+        \begin{column}{0.4\textwidth}
+
+            \begin{equation}
+                \begin{aligned}
+                    EJ^*     & = E_b J_b + 2 E_p J_p       \\
+                    \rho A^* & = \rho_b A_b + 2 \rho_p A_p
+                \end{aligned}
+            \end{equation}
+
+        \end{column}
+
+    \end{columns}
+
+\end{frame}

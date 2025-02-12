@@ -7,7 +7,7 @@ clear variables
 
 %% Preliminary analysis of wave velocities
 
-[x_grid, t_grid] = meshgrid(linspace(0, modulation.lambda, 100), linspace(1, modulation.period, 100));
+[x_grid, t_grid] = meshgrid(linspace(0, modulation.lambda, 100), linspace(0, modulation.period, 100));
 [E_grid, J_grid, A_grid, rho_grid] = evaluate_structural_properties(x_grid, t_grid, STC);
 
 c0_longitudinal = sqrt(E_grid ./ rho_grid);

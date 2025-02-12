@@ -13,13 +13,13 @@ hold on
 grid on
 view(3)
 
-surf(x_grid*1e3, t_grid, property_grid, 'EdgeColor', 'none')
+surf(x_grid*1e3, t_grid*1e3, property_grid, 'EdgeColor', 'none')
 
 shading interp
 
 title(title_label)
 xlabel('x [mm]')
-ylabel('t [s]')
+ylabel('t [ms]')
 zlabel(z_axis_label)
 
 axis padded

@@ -88,7 +88,7 @@ switch (lower(type))
         grid minor
         plot(f_vector * 1e-3, real(mu_vector), 'k.', 'DisplayName', 'Propagating solutions')
         plot(f_vector * 1e-3, imag(mu_vector), 'r.', 'DisplayName', 'Attenuating solutions')
-        title('??')
+        title('Dispersion diagram (TMM)')
         xlabel('f [kHz]')
         ylabel('Im[\mu]')
 

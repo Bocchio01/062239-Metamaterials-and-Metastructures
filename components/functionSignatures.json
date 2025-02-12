@@ -1,55 +1,223 @@
 {
     "_schemaVersion": "1.0.0",
-    "Shunt.Shunt": {
-        "description": "Construct a Shunt object with specified parameters.",
+    "SpatioTemporalCell.SpatioTemporalCell": {
+        "description": "Construct a SpatioTemporalCell object representing a unit cell composed of a beam and piezoelectric material.",
         "inputs": [
             {
-                "name": "label",
+                "name": "beam",
                 "kind": "required",
-                "type": ["char", "string", "choices={'OFF', '+inf', 'C-', 'RLC-', 'RLC', 'RL//C', 'RC//L'}"],
-                "purpose": "Shunt configuration label."
+                "type": ["Beam"],
+                "purpose": "Beam object representing the beam component."
             },
             {
-                "name": "R0",
+                "name": "piezo",
+                "kind": "required",
+                "type": ["Piezo"],
+                "purpose": "Piezo object representing the piezoelectric component."
+            }
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": "SpatioTemporalCell",
+                "purpose": "Instance of the SpatioTemporalCell class."
+            }
+        ]
+    },
+    "SpatioTemporalCell.computeAveragedProps": {
+        "description": "Compute the effective mechanical properties of the unit cell, including area, inertia, density, and Young's modulus.",
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": ["SpatioTemporalCell"],
+                "purpose": "Instance of the SpatioTemporalCell class."
+            }
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": "SpatioTemporalCell",
+                "purpose": "Updated instance of SpatioTemporalCell with computed properties."
+            }
+        ]
+    },
+    "Beam.Beam": {
+        "description": "Construct a Beam object with mechanical properties.",
+        "inputs": [
+            {
+                "name": "E",
                 "kind": "namevalue",
                 "type": ["double", "scalar"],
-                "purpose": "Resistance R0 (default: 1000e3 Ohm)."
+                "purpose": "Young's modulus [Pa] (default: 69e9)."
             },
             {
-                "name": "R1",
+                "name": "h",
                 "kind": "namevalue",
                 "type": ["double", "scalar"],
-                "purpose": "Resistance R1 (default: 7.5e3 Ohm)."
+                "purpose": "Beam height [m] (default: 1e-3)."
             },
             {
-                "name": "R2",
+                "name": "b",
                 "kind": "namevalue",
                 "type": ["double", "scalar"],
-                "purpose": "Resistance R2 (default: 13.7e3 Ohm)."
-            },
-            {
-                "name": "C0",
-                "kind": "namevalue",
-                "type": ["double", "scalar"],
-                "purpose": "Capacitance C0 (default: 4.4e-9 F)."
+                "purpose": "Beam width [m] (default: 20e-3)."
             },
             {
                 "name": "L",
                 "kind": "namevalue",
                 "type": ["double", "scalar"],
-                "purpose": "Inductance L (default: 15e-3 H)."
+                "purpose": "Beam length [m] (default: 24e-3)."
+            },
+            {
+                "name": "rho",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Density [kg/m^3] (default: 2700)."
+            }
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": "Beam",
+                "purpose": "Instance of the Beam class."
+            }
+        ]
+    },
+    "Piezo.Piezo": {
+        "description": "Construct a Piezo object representing a piezoelectric material.",
+        "inputs": [
+            {
+                "name": "Y11_E",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Young's modulus in short circuit [Pa] (default: 62e9)."
+            },
+            {
+                "name": "C_T",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Capacitance at constant stress [F] (default: 7.0e-9)."
+            },
+            {
+                "name": "k31",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Electromechanical coupling coefficient (default: 0.351)."
+            },
+            {
+                "name": "h",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Thickness [m] (default: 1e-3)."
+            },
+            {
+                "name": "b",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Width [m] (default: 20e-3)."
+            },
+            {
+                "name": "L",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Length [m] (default: 22e-3)."
+            },
+            {
+                "name": "rho",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Density [kg/m^3] (default: 7900)."
+            }
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": "Piezo",
+                "purpose": "Instance of the Piezo class."
+            }
+        ]
+    },
+    "Piezo.bindShunt": {
+        "description": "Bind a shunt circuit to the Piezo object, modifying its effective Young's modulus.",
+        "inputs": [
+            {
+                "name": "obj",
+                "kind": "required",
+                "type": ["Piezo"],
+                "purpose": "Instance of the Piezo class."
+            },
+            {
+                "name": "shunt",
+                "kind": "required",
+                "type": ["Shunt"],
+                "purpose": "Shunt circuit object to be bound."
+            },
+            {
+                "name": "w",
+                "kind": "required",
+                "type": ["double", "scalar"],
+                "purpose": "Frequency [rad/s] at which to evaluate the shunt impedance."
+            }
+        ],
+        "outputs": [
+            {
+                "name": "obj",
+                "type": "Piezo",
+                "purpose": "Updated instance of the Piezo class with bound shunt."
+            }
+        ]
+    },
+    "Shunt.Shunt": {
+        "description": "Construct a Shunt object representing an electrical impedance circuit.",
+        "inputs": [
+            {
+                "name": "label",
+                "kind": "required",
+                "type": ["char", "string"],
+                "purpose": "Shunt configuration label (e.g., 'RLC-', 'RC//L')."
+            },
+            {
+                "name": "R0",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "High-value resistance (default: 1000 kΩ)."
+            },
+            {
+                "name": "R1",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Series resistance 1 (default: 7.5 kΩ)."
+            },
+            {
+                "name": "R2",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Series resistance 2 (default: 13.7 kΩ)."
+            },
+            {
+                "name": "C0",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Capacitance C0 (default: 4.4 nF)."
+            },
+            {
+                "name": "L",
+                "kind": "namevalue",
+                "type": ["double", "scalar"],
+                "purpose": "Inductance (default: 15 mH)."
             },
             {
                 "name": "R",
                 "kind": "namevalue",
                 "type": ["double", "scalar"],
-                "purpose": "Resistance R (default: 1000 Ohm)."
+                "purpose": "Resistance (default: 1000 Ω)."
             },
             {
                 "name": "C",
                 "kind": "namevalue",
                 "type": ["double", "scalar"],
-                "purpose": "Capacitance C (default: 5e-9 F)."
+                "purpose": "Additional capacitance (default: 5 nF)."
             }
         ],
         "outputs": [
@@ -61,7 +229,7 @@
         ]
     },
     "Shunt.getZModel": {
-        "description": "Compute the impedance model for the shunt configuration.",
+        "description": "Compute the impedance function handle for the given shunt configuration.",
         "inputs": [
             {
                 "name": "obj",
@@ -74,7 +242,7 @@
             {
                 "name": "Z",
                 "type": "function_handle",
-                "purpose": "Function handle Z(w) returning impedance."
+                "purpose": "Function handle @(w) Z(w) representing the impedance as a function of frequency."
             }
         ]
     }

@@ -31,28 +31,30 @@ mu = 2*pi*kk * 3*Beam().L;
 
 %% Plot
 
+reset(0)
+set(0, 'DefaultFigureNumberTitle', 'off')
+set(0, 'DefaultFigureWindowStyle', 'docked')
+set(0, 'defaultaxesfontsize', 18);
+set(0, 'DefaultLineLineWidth', 2);
+set(0,'defaultTextInterpreter','latex');
+
 figure('Name', ['Experimental: ' infos.filename])
-    set(0, 'DefaultLineLineWidth', 1);
+
 colormap(jet(64))
 
 tiledlayout(1, 2)
 
-% ff_idxs = find(ff >= 0 & ff <= 20e3);
-% mu_idxs = find(mu >= -5*pi & mu <= 0*pi);
-% plot_dispersion_diagram('experimental', mu(mu_idxs), ff(ff_idxs), U_fft(ff_idxs, mu_idxs));
-% 
-% yregion(10, 11)
-% xlim([-5 -3.5])
+ff_idxs = find(ff >= 0 & ff <= 20e3);
+mu_idxs = find(mu >= -5*pi & mu <= 0*pi);
+plot_dispersion_diagram('experimental', -mu(mu_idxs), ff(ff_idxs), U_fft(ff_idxs, mu_idxs));
 
-% yregion(8, 9)
-% xlim([3 4.5])
-% ylim([6 13])
-% 
-% idxs = find(time > 0e-3);
-% plot_waterfall(flip(nodes.x) * 1e+3, time(idxs), U(idxs, :), 15);
-% 
-% title('Waterfall plot $f_m = -2[khz]$ $f_e = 10.5[khz]$')
-% export_pdf_graphic(gcf, ['/EXP_' infos.filename])
+title('Experimetal fft2()')
+xlabel('$\mu / \pi$')
+ylabel('$f [kHz]$')
 
-Ufft = abs(fftshift(fft(U(:, end), N2)));
-plot(abs(Ufft)/norm(Ufft, inf))
+ylim([0 20])
+
+idxs = find(time > 0e-3);
+plot_waterfall(flip(nodes.x) * 1e+3, time(idxs), U(idxs, :), 15);
+
+title('Waterfall plot')

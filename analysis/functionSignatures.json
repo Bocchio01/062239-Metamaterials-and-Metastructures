@@ -1,14 +1,56 @@
 {
-  "_schemaVersion": "1.0.0",
-  "assemble_STC":
-  {
-     "inputs":
-     [
-        {"name":"modulation_label", "kind":"required", "type":["char", "choices={'OFF-OFF-OFF','ON-ON-ON','ON-OFF-OFF','Sinusoidal (continuos)','Sinusoidal (discrete)'}"], "purpose":"Piezo modulation type"},
-        {"name":"modulation_frequency", "kind":"ordered", "type":["numeric","scalar"], "purpose":"Piezo modulation frequency (default 0)"},
-        {"name":"beam", "kind":"namevalue", "type":"Beam", "purpose":"Beam type element"},
-        {"name":"piezo", "kind":"namevalue", "type":"Piezo", "purpose":"Piezo type element"},
-        {"name":"shunt", "kind":"namevalue", "type":"Shunt", "purpose":"Shunt type element"}
-     ]
-  }
+    "_schemaVersion": "1.0.0",
+    "assemble_STC": {
+        "description": "Assemble a SpatioTemporalCell (STC) array with modulation properties.",
+        "inputs": [
+            {
+                "name": "modulation_label",
+                "kind": "required",
+                "type": ["char", "choices={'OFF-OFF-OFF','ON-ON-ON','ON-OFF-OFF','Sinusoidal (continuos)','Sinusoidal (discrete)'}"],
+                "purpose": "Piezo modulation type (default: 'Sinusoidal (discrete)')."
+            },
+            {
+                "name": "modulation_frequency",
+                "kind": "ordered",
+                "type": ["numeric", "scalar"],
+                "purpose": "Piezo modulation frequency in Hz (default: 0)."
+            },
+            {
+                "name": "components",
+                "kind": "namevalue",
+                "type": "struct",
+                "purpose": "Structure containing beam, piezo, and shunt components."
+            },
+            {
+                "name": "components.beam",
+                "kind": "namevalue",
+                "type": "Beam",
+                "purpose": "Beam type element (default: Beam())."
+            },
+            {
+                "name": "components.piezo",
+                "kind": "namevalue",
+                "type": "Piezo",
+                "purpose": "Piezo type element (default: Piezo())."
+            },
+            {
+                "name": "components.shunt",
+                "kind": "namevalue",
+                "type": "Shunt",
+                "purpose": "Shunt type element (default: Shunt('C-'))."
+            }
+        ],
+        "outputs": [
+            {
+                "name": "STC",
+                "type": "SpatioTemporalCell",
+                "purpose": "Array of SpatioTemporalCell objects forming the assembled unit."
+            },
+            {
+                "name": "modulation",
+                "type": "struct",
+                "purpose": "Modulation parameters including label, frequency, and amplitude."
+            }
+        ]
+    }
 }

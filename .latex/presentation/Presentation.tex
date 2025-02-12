@@ -1,10 +1,11 @@
-\documentclass[9pt]{beamer}
+\documentclass[9pt, draft]{beamer}
 
 \usepackage{appendixnumberbeamer}
 \usepackage{booktabs}
 \usepackage[scale=2]{ccicons}
 \usepackage{pgfplots}
-\usepackage{tikz}
+% \usepackage{tikz}
+\usepackage{circuitikz}
 \usepackage{graphics}
 \usepackage{soul}
 
@@ -48,10 +49,10 @@
 
             \begin{figure}[H]
                 \centering
-                \includegraphics[width=0.48\textwidth]{img/MATLAB/EXP_nonreciprocal_@+2kHz.pdf}
-                \hfill
-                \includegraphics[width=0.48\textwidth]{img/MATLAB/EXP_nonreciprocal_@-2kHz.pdf}
-                \caption{\hl{Re-export with label on axis}}
+                \includegraphics[width=0.47\textwidth]{img/MATLAB/EXP_nonreciprocal_@+2kHz.pdf}
+                \hspace{1mm}
+                \includegraphics[width=0.47\textwidth]{img/MATLAB/EXP_nonreciprocal_@-2kHz.pdf}
+                \caption{Experimental results of nonreciprocal behavior.}
             \end{figure}
 
         \end{column}
@@ -60,14 +61,11 @@
 
 \end{frame}
 
-
-% - The idea of shunted piezo connect to piezo == modulation in the beam properties (theoretical part)
-% - Sensitivity analysis
-% - Experimental results for space modulation only
-% - Experimental result for also time modulated and focus on nonreciprocity
-
-% \input{src/01 - introduction.tex}
-% \input{src/02 -
+\input{src/01 - introduction.tex}
+\input{src/02 - shunted_piezo_analysis.tex}
+\input{src/03 - experimental_results.tex}
+\input{src/04 - nonreciprocal_behavior.tex}
+\input{src/05 - conclusions.tex}
 
 \appendix
 
